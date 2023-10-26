@@ -14,11 +14,4 @@
     <ProjectReference Include="..\BlazorWASMOnionMessenger.Domain\BlazorWASMOnionMessenger.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Common\DTOs\" />
-    <Folder Include="Common\MappingProfiles\" />
-    <Folder Include="Interfaces\Repositories\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>

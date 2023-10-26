@@ -11,9 +11,4 @@
     <ProjectReference Include="..\BlazorWASMOnionMessenger.Domain\BlazorWASMOnionMessenger.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Contexts\" />
-    <Folder Include="Repositories\" />
-  </ItemGroup>
-
 </Project>
