@@ -9,7 +9,11 @@ namespace BlazorWASMOnionMessenger.Persistence.Repositories
     {
         private readonly ApplicationDbContext _dbContext;
         private Hashtable _repositories;
-        private bool disposed;
+
+        public UnitOfWork(ApplicationDbContext dbContext)
+        {
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        }
 
         public IGenericRepository<T> Repository<T>() where T : BaseEntity
         {
@@ -33,22 +37,6 @@ namespace BlazorWASMOnionMessenger.Persistence.Repositories
         public async Task<int> Save()
         {
             return await _dbContext.SaveChangesAsync();
-        }
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposed)
-            {
-                if (disposing)
-                {
-                    _dbContext.Dispose();
-                }
-            }
-            disposed = true;
         }
     }
 }
