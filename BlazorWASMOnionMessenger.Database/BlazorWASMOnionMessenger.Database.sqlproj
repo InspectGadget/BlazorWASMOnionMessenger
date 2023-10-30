@@ -60,13 +60,19 @@
     <Folder Include="scripts" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="dbo\Users.sql" />
     <Build Include="dbo\Roles.sql" />
     <Build Include="dbo\Chats.sql" />
     <Build Include="dbo\Participants.sql" />
     <Build Include="dbo\Messages.sql" />
     <Build Include="dbo\UnreadMessage.sql" />
     <Build Include="dbo\ChatTypes.sql" />
+    <Build Include="dbo\AspNetRoleClaims.sql" />
+    <Build Include="dbo\AspNetRoles.sql" />
+    <Build Include="dbo\AspNetUserClaims.sql" />
+    <Build Include="dbo\AspNetUserLogins.sql" />
+    <Build Include="dbo\AspNetUserRoles.sql" />
+    <Build Include="dbo\AspNetUsers.sql" />
+    <Build Include="dbo\AspNetUserTokens.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="BlazorWASMOnionMessenger.Database.refactorlog" />

@@ -1,16 +1,21 @@
 ﻿using BlazorWASMOnionMessenger.Domain.Common;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlazorWASMOnionMessenger.Domain.Entities
 {
     public class Message : BaseEntity
     {
-        public int Chat_id { get; set; }
+        [ForeignKey("Chat")]
+        public int ChatId { get; set; }
         public Chat Chat { get; set; } = null!;
-        public int Sender_id { get; set; }
-        public User User { get; set; } = null!;
+
+        [ForeignKey("ApplicationUser")]
+        public string SenderId { get; set; } = string.Empty;
+        public ApplicationUser ApplicationUser { get; set; } = null!;
+
         public string Message_text { get; set; } = string.Empty;
-        public DateTime Created_at { get; set; }
-        public string Attachment_url { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+        public string AttachmentUrl { get; set; } = string.Empty;
         public ICollection<UnreadMessage> UnreadMessages { get; } = new List<UnreadMessage>();
     }
 }

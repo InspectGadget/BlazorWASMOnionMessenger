@@ -1,17 +1,16 @@
-﻿using BlazorWASMOnionMessenger.Application.Interfaces.Contexts;
-using BlazorWASMOnionMessenger.Domain.Entities;
+﻿using BlazorWASMOnionMessenger.Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlazorWASMOnionMessenger.Persistence.Contexts
 {
-    public class ApplicationDbContext : DbContext, IDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
-        { 
+        {
         }
 
-        public DbSet<User> Users { get; set; }
         public DbSet<Chat> Chats { get; set; }
         public DbSet<Chat> ChatTypes { get; set; }
         public DbSet<Participant> Participants { get; set; }

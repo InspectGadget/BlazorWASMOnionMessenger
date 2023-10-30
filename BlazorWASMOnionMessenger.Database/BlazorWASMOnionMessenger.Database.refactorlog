@@ -175,4 +175,95 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Updated_at" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="a514ee6a-5723-4c18-b0e1-0cf3f36c342a" ChangeDateTime="10/30/2023 12:57:12">
+    <Property Name="ElementName" Value="[dbo].[Chats].[Type_id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Chats]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TypeId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="c08cad4a-6305-40c3-8a66-17aa504eb92e" ChangeDateTime="10/30/2023 12:57:16">
+    <Property Name="ElementName" Value="[dbo].[Chats].[Created_at]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Chats]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CreatedAt" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="61b6a687-5e39-4260-b047-31d1e8e4f8da" ChangeDateTime="10/30/2023 12:57:32">
+    <Property Name="ElementName" Value="[dbo].[Messages].[Chat_id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Messages]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ChatId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="cb5c9669-6454-4bfa-9fc2-1a62a953db99" ChangeDateTime="10/30/2023 12:57:37">
+    <Property Name="ElementName" Value="[dbo].[Messages].[Sender_id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Messages]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="SenderId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="53e169d0-5def-4b34-bb74-c3060461af51" ChangeDateTime="10/30/2023 12:57:41">
+    <Property Name="ElementName" Value="[dbo].[Messages].[Message_text]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Messages]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="MessageText" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="c6280f9a-14af-4d66-b65a-bc239058cd10" ChangeDateTime="10/30/2023 12:57:48">
+    <Property Name="ElementName" Value="[dbo].[Messages].[Created_at]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Messages]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CreatedAt" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="1f068c31-e5fa-4b27-916b-9dd91d570156" ChangeDateTime="10/30/2023 12:59:29">
+    <Property Name="ElementName" Value="[dbo].[Messages].[Attachment_url]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Messages]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="AttachmentUrl" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="68254876-5b10-4e40-ac34-866b844a36e8" ChangeDateTime="10/30/2023 12:59:37">
+    <Property Name="ElementName" Value="[dbo].[Participants].[Chat_id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Participants]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ChatId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="5406319a-3e1e-482d-aca7-70dd47cbb2ee" ChangeDateTime="10/30/2023 12:59:40">
+    <Property Name="ElementName" Value="[dbo].[Participants].[User_id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Participants]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UserId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="331ff440-3d1c-41fb-8d41-f88a5cafd37f" ChangeDateTime="10/30/2023 12:59:45">
+    <Property Name="ElementName" Value="[dbo].[Participants].[Role_id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Participants]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="RoleId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="f05b2bd9-d611-4ab5-a4e4-299cfd702e43" ChangeDateTime="10/30/2023 12:59:49">
+    <Property Name="ElementName" Value="[dbo].[Participants].[Joined_at]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Participants]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="JoinedAt" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="d649c2cd-2c81-4c9c-aa66-4cc70cfd5165" ChangeDateTime="10/30/2023 13:00:02">
+    <Property Name="ElementName" Value="[dbo].[UnreadMessage].[User_id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[UnreadMessage]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UserId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="453e3605-e435-402b-8a72-04216033372b" ChangeDateTime="10/30/2023 13:00:08">
+    <Property Name="ElementName" Value="[dbo].[UnreadMessage].[Message_id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[UnreadMessage]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="MessageId" />
+  </Operation>
 </Operations>

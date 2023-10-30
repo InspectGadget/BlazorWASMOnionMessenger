@@ -1,9 +1,11 @@
 ﻿using BlazorWASMOnionMessenger.Application.Interfaces.Repositories;
+using BlazorWASMOnionMessenger.Application.Interfaces.UnitOfWorks;
 using BlazorWASMOnionMessenger.Domain.Common;
 using BlazorWASMOnionMessenger.Persistence.Contexts;
+using BlazorWASMOnionMessenger.Persistence.Repositories;
 using System.Collections;
 
-namespace BlazorWASMOnionMessenger.Persistence.Repositories
+namespace BlazorWASMOnionMessenger.Persistence.UnitOfWorks
 {
     public class UnitOfWork : IUnitOfWork
     {
