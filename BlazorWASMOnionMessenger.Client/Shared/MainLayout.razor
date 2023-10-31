@@ -7,7 +7,21 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <AuthorizeView>
+                <NotAuthorized>
+                    <NavLink class="nav-link" href="register">
+                        Register
+                    </NavLink>
+                    <NavLink class="nav-link" href="login">
+                        Login
+                    </NavLink>
+                </NotAuthorized>
+                <Authorized>
+                    <NavLink class="nav-link" href="logout">
+                        Logout
+                    </NavLink>
+                </Authorized>
+            </AuthorizeView>
         </div>
 
         <article class="content px-4">

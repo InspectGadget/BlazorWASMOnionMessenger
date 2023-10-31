@@ -44,7 +44,7 @@ namespace BlazorWASMOnionMessenger.Application.Services
 
             if (userExists)
             {
-                throw new CustomAuthenticationException("User with the same email or username already exists.");
+                throw new CustomAuthenticationException("User with the same username already exists.");
             }
 
             var user = _mapper.Map<ApplicationUser>(userRegisterDto);

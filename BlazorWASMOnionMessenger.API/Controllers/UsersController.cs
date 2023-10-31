@@ -20,46 +20,46 @@ namespace BlazorWASMOnionMessenger.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto)
+        public async Task<ActionResult<UserResponseDto>> Login([FromBody] UserLoginDto userLoginDto)
         {
             try
             {
                 string token = await _userService.Login(userLoginDto);
-                return Ok(new { Token = token });
+                return Ok(new UserResponseDto { IsSuccessful = true, Token = token });
             }
             catch (CustomAuthenticationException ex)
             {
-                return Unauthorized(new { ex.Message });
+                return Unauthorized(new UserResponseDto { ErrorMessage = ex.Message });
             }
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] UserRegisterDto userRegisterDto)
+        public async Task<ActionResult<UserResponseDto>> Register([FromBody] UserRegisterDto userRegisterDto)
         {
             try
             {
                 string token = await _userService.Register(userRegisterDto);
-                return Ok(new { Token = token });
+                return Ok(new UserResponseDto { IsSuccessful = true, Token = token });
             }
             catch (CustomAuthenticationException ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new UserResponseDto { ErrorMessage = ex.Message });
             }
         }
 
         [Authorize]
         [HttpPost("changepassword")]
-        public async Task<IActionResult> ChangePassword([FromBody] UserChangePasswordDto changePasswordDto)
+        public async Task<ActionResult<UserResponseDto>> ChangePassword([FromBody] UserChangePasswordDto changePasswordDto)
         {
             try
             {
                 await _userService.ChangePassword(User.FindFirstValue(ClaimTypes.NameIdentifier), changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
-                return Ok(new { Message = "Password changed successfully." });
+                return Ok(new UserResponseDto { IsSuccessful = true });
             }
             catch (CustomAuthenticationException ex)
             {
-                return BadRequest(new { ex.Message });
+                return BadRequest(new UserResponseDto { ErrorMessage = ex.Message });
             }
         }
     }

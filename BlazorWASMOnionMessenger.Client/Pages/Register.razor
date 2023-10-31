@@ -1,0 +1,56 @@
+﻿@page "/register"
+<h3>Register</h3>
+
+@if (ShowAuthError)
+{
+    <div class="alert alert-danger" role="alert">
+        <p>@Error</p>
+    </div>
+}
+
+<EditForm Model="_userRegisterDto" OnValidSubmit="HandleRegister" class="card card-body bg-light mt-5">
+    <DataAnnotationsValidator />
+
+    <div class="form-group row pb-2">
+        <label for="FirstName" class="col-md-2 col-form-label">First name:</label>
+        <div class="col-md-10">
+            <InputText id="FirstName" class="form-control" @bind-Value="_userRegisterDto.FirstName" />
+            <ValidationMessage For="@(() => _userRegisterDto.FirstName)" />
+        </div>
+    </div>
+    <div class="form-group row pb-2">
+        <label for="LastName" class="col-md-2 col-form-label">Last name:</label>
+        <div class="col-md-10">
+            <InputText id="LastName" class="form-control" @bind-Value="_userRegisterDto.LastName" />
+            <ValidationMessage For="@(() => _userRegisterDto.LastName)" />
+        </div>
+    </div>
+    <div class="form-group row pb-2">
+        <label for="PhoneNumber" class="col-md-2 col-form-label">Phone number:</label>
+        <div class="col-md-10">
+            <InputText id="PhoneNumber" class="form-control" @bind-Value="_userRegisterDto.PhoneNumber" />
+            <ValidationMessage For="@(() => _userRegisterDto.PhoneNumber)" />
+        </div>
+    </div>
+    <div class="form-group row pb-2">
+        <label for="UserName" class="col-md-2 col-form-label">Username:</label>
+        <div class="col-md-10">
+            <InputText id="UserName" class="form-control" @bind-Value="_userRegisterDto.UserName" />
+            <ValidationMessage For="@(() => _userRegisterDto.UserName)" />
+        </div>
+    </div>
+
+    <div class="form-group row pb-2">
+        <label for="Password" class="col-md-2 col-form-label">Password:</label>
+        <div class="col-md-10">
+            <InputText type="password" id="Password" class="form-control" @bind-Value="_userRegisterDto.Password" />
+            <ValidationMessage For="@(() => _userRegisterDto.Password)" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="submit" class="btn btn-success">Register</button>
+        </div>
+    </div>
+</EditForm>
