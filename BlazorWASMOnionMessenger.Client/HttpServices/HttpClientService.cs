@@ -1,5 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text;
+using System.Net.Http.Headers;
+using System.Net.Http;
 
 namespace BlazorWASMOnionMessenger.Client.HttpServices
 {
@@ -23,6 +25,16 @@ namespace BlazorWASMOnionMessenger.Client.HttpServices
             var result = JsonSerializer.Deserialize<TResponse>(responseContent, _options);
 
             return result;
+        }
+
+        public void SetAuthorizationHeader(string token)
+        {
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+        }
+
+        public void RemoveAuthorizationHeader()
+        {
+            _client.DefaultRequestHeaders.Authorization = null;
         }
     }
 }

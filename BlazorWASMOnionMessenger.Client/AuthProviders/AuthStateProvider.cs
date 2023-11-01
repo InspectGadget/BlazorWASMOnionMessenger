@@ -1,20 +1,20 @@
 ﻿using Blazored.LocalStorage;
 using BlazorWASMOnionMessenger.Client.Features.Helpers;
+using BlazorWASMOnionMessenger.Client.HttpServices;
 using Microsoft.AspNetCore.Components.Authorization;
-using System.Net.Http.Headers;
 using System.Security.Claims;
 
 namespace BlazorWASMOnionMessenger.Client.AuthProviders
 {
     public class AuthStateProvider : AuthenticationStateProvider
     {
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClientService _httpClientService;
         private readonly ILocalStorageService _localStorage;
         private readonly AuthenticationState _anonymous;
 
-        public AuthStateProvider(HttpClient httpClient, ILocalStorageService localStorage)
+        public AuthStateProvider(IHttpClientService httpClientService, ILocalStorageService localStorage)
         {
-            _httpClient = httpClient;
+            _httpClientService = httpClientService;
             _localStorage = localStorage;
             _anonymous = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
@@ -24,13 +24,13 @@ namespace BlazorWASMOnionMessenger.Client.AuthProviders
             var token = await _localStorage.GetItemAsync<string>("authToken");
             if (string.IsNullOrWhiteSpace(token))
                 return _anonymous;
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+            _httpClientService.SetAuthorizationHeader(token);
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(JwtTokenParser.ParseClaimsFromJwt(token), "jwtAuthType")));
         }
 
         public void NotifyUserAuthentication(string token)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+            _httpClientService.SetAuthorizationHeader(token);
             var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(JwtTokenParser.ParseClaimsFromJwt(token), "jwtAuthType"));
             var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
             NotifyAuthenticationStateChanged(authState);
@@ -38,7 +38,7 @@ namespace BlazorWASMOnionMessenger.Client.AuthProviders
 
         public void NotifyUserLogout()
         {
-            _httpClient.DefaultRequestHeaders.Authorization = null;
+            _httpClientService.RemoveAuthorizationHeader();
             var authState = Task.FromResult(_anonymous);
             NotifyAuthenticationStateChanged(authState);
         }
