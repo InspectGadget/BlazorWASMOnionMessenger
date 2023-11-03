@@ -6,7 +6,7 @@ namespace BlazorWASMOnionMessenger.Domain.Entities
     public class UnreadMessage : BaseEntity
     {
         [ForeignKey("ApplicationUser")]
-        public string UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         public ApplicationUser User { get; set; } = null!;
 
         [ForeignKey("Message")]

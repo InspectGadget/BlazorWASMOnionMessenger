@@ -1,5 +1,6 @@
 ﻿using BlazorWASMOnionMessenger.Application.Common.Exceptions;
 using BlazorWASMOnionMessenger.Application.Interfaces.Users;
+using BlazorWASMOnionMessenger.Domain.Common;
 using BlazorWASMOnionMessenger.Domain.DTOs.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,61 @@ namespace BlazorWASMOnionMessenger.API.Controllers
         public UsersController(IUserService userService)
         {
             _userService = userService;
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUserById(string userId)
+        {
+            try
+            {
+                var userDto = await _userService.GetById(userId);
+                if (userDto != null)
+                {
+                    return Ok(userDto);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("page")]
+        public async Task<ActionResult<PagedEntities<UserDto>>> GetUsersPage(int page, int pageSize, string orderBy = "", bool? orderType = null, string search = "")
+        {
+            try
+            {
+                var pageResult = await _userService.GetPage(page, pageSize, orderBy, orderType ?? false, search);
+                return Ok(pageResult);
+            }
+            catch (RepositoryException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> UpdateUser(string userId, [FromBody] UserDto userDto)
+        {
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (currentUserId == userId)
+            {
+                try
+                {
+                    await _userService.UpdateUser(userDto, userId);
+                    return Ok("User updated successfully.");
+                }
+                catch (RepositoryException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            else
+            {
+                return Forbid();
+            }
         }
 
         [AllowAnonymous]
