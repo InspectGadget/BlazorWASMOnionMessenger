@@ -1,0 +1,34 @@
+﻿@page "/users"
+@using BlazorWASMOnionMessenger.Domain.DTOs.User;
+
+
+<h3>Users</h3>
+<RadzenRow>
+    <RadzenColumn Size="8">
+        <RadzenTextBox Placeholder="Search..." @bind-Value="Search" class="w-15" />
+        <RadzenButton Click="Fetch" Text="Search" ButtonStyle="ButtonStyle.Info" />
+    </RadzenColumn>
+    <RadzenColumn Size="4">
+        <RadzenLabel Text="Desc" Component="CheckBox1" Style="margin-right: 8px; vertical-align: middle;" />
+        <RadzenCheckBox @bind-Value=OrderType Name="CheckBox1" TValue="bool" Change="OnCheckBoxChange" />
+        <RadzenDropDown @bind-Value=OrderBy Data=props class="mt-2" Style="width: 100%; max-width: 400px;" Change="Navigate" />
+    </RadzenColumn>
+</RadzenRow>
+
+<RadzenGrid TItem="UserDto" Data="users" >
+    <Columns>
+        <RadzenGridColumn TItem="UserDto" Property="Id" Title="ID" />
+        <RadzenGridColumn TItem="UserDto" Property="UserName" Title="Username" />
+        <RadzenGridColumn TItem="UserDto" Property="FirstName" Title="First Name" />
+        <RadzenGridColumn TItem="UserDto" Property="LastName" Title="Last Name" />
+        <RadzenGridColumn TItem="UserDto" Property="PhoneNumber" Title="Phone Number" />
+    </Columns>
+</RadzenGrid>
+<RadzenRow>
+    <RadzenColumn Size="10">
+        <RadzenPager Count="TotalUsers" PageSize="2" PageNumbersCount="5" PageChanged="OnPageChange" />
+    </RadzenColumn>
+    <RadzenColumn Size="2">
+        <RadzenDropDown @bind-Value=PageSize Data=pageSizeOptions class="mt-2" Style="width: 100%; max-width: 400px;" Change="Navigate" />
+    </RadzenColumn>
+</RadzenRow>

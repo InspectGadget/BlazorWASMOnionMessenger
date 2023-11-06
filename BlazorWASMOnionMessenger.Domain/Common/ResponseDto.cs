@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlazorWASMOnionMessenger.Domain.DTOs.User
+namespace BlazorWASMOnionMessenger.Domain.Common
 {
-    public class UserResponseDto
+    public class ResponseDto
     {
         public bool IsSuccessful { get; set; } = false;
         public string ErrorMessage { get; set; } = string.Empty;
-        public string Token { get; set; } = string.Empty;
     }
 }

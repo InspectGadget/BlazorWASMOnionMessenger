@@ -1,0 +1,25 @@
+﻿@page "/profile"
+
+<h3>User Profile</h3>
+
+<RadzenColumn Size="12" SizeSM="6">
+    <RadzenStack>
+            <RadzenLabel Text="Id" />
+            <RadzenTextBox Disabled @bind-Value="_userDto.Id" />
+
+             <RadzenLabel Text="Username" />
+             <RadzenTextBox @bind-Value="_userDto.UserName" />
+
+             <RadzenLabel Text="First Name" />
+             <RadzenTextBox @bind-Value="_userDto.FirstName" />
+
+             <RadzenLabel Text="Last Name" />
+             <RadzenTextBox @bind-Value="_userDto.LastName" />
+
+             <RadzenLabel Text="PhoneNumber" />
+             <RadzenTextBox @bind-Value="_userDto.PhoneNumber" />
+
+             <RadzenButton Text="Update Profile" Click="UpdateProfile" ButtonType="ButtonType.Submit" />
+    </RadzenStack>
+</RadzenColumn>
+    

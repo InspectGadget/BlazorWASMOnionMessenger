@@ -93,7 +93,6 @@ namespace BlazorWASMOnionMessenger.Application.Services
             {
                 throw new RepositoryException("Failed to update.");
             }
-
         }
 
         public async Task<UserDto> GetById(string userId)
@@ -106,14 +105,11 @@ namespace BlazorWASMOnionMessenger.Application.Services
         {
             var users = _userManager.Users.AsQueryable();
 
-            if (!string.IsNullOrEmpty(search))
-            {
-                users = users.Where(BuildSearchExpression(search));
-            }
+            if (!string.IsNullOrEmpty(search)) users = users.Where(BuildSearchExpression(search));
 
             var quantity = users.Count();
 
-            if (!string.IsNullOrEmpty(orderBy)) users = users.OrderBy(orderBy + (orderType ? " desc" : " asc"));
+            if (!string.IsNullOrEmpty(orderBy)) users = users.OrderBy(orderBy + " " + (orderType ? "desc" : "asc") );
 
             var pageUsers = await users.Skip((page - 1) * pageSize).Take(pageSize)
                 .ProjectTo<UserDto>(_mapper.ConfigurationProvider).ToListAsync();

@@ -25,14 +25,18 @@ namespace BlazorWASMOnionMessenger.Client.AuthProviders
             if (string.IsNullOrWhiteSpace(token))
                 return _anonymous;
             _httpClientService.SetAuthorizationHeader(token);
-            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(JwtTokenParser.ParseClaimsFromJwt(token), "jwtAuthType")));
+            var claims = JwtTokenParser.ParseClaimsFromJwt(token);
+            var identity = new ClaimsIdentity(claims, "jwtAuthType");
+
+            return new AuthenticationState(new ClaimsPrincipal(identity));
         }
 
         public void NotifyUserAuthentication(string token)
         {
             _httpClientService.SetAuthorizationHeader(token);
-            var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(JwtTokenParser.ParseClaimsFromJwt(token), "jwtAuthType"));
-            var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
+            var claims = JwtTokenParser.ParseClaimsFromJwt(token);
+            var identity = new ClaimsIdentity(claims, "jwtAuthType");
+            var authState = Task.FromResult(new AuthenticationState(new ClaimsPrincipal(identity)));
             NotifyAuthenticationStateChanged(authState);
         }
 

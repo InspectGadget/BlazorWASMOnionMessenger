@@ -2,7 +2,7 @@
 using BlazorWASMOnionMessenger.Domain.DTOs.User;
 using Microsoft.AspNetCore.Components;
 
-namespace BlazorWASMOnionMessenger.Client.Pages
+namespace BlazorWASMOnionMessenger.Client.Pages.Auth
 {
     public partial class Register
     {

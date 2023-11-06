@@ -1,7 +1,7 @@
 ﻿using BlazorWASMOnionMessenger.Client.Features.Users;
 using Microsoft.AspNetCore.Components;
 
-namespace BlazorWASMOnionMessenger.Client.Pages
+namespace BlazorWASMOnionMessenger.Client.Pages.Auth
 {
     public partial class Logout
     {

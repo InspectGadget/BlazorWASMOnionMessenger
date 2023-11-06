@@ -2,17 +2,17 @@
 using BlazorWASMOnionMessenger.Domain.DTOs.User;
 using Microsoft.AspNetCore.Components;
 
-namespace BlazorWASMOnionMessenger.Client.Pages
+namespace BlazorWASMOnionMessenger.Client.Pages.User
 {
     public partial class ChangePassword
     {
-        private UserChangePasswordDto _userChangePasswordDto = new UserChangePasswordDto();
+        protected UserChangePasswordDto _userChangePasswordDto = new UserChangePasswordDto();
         [Inject]
-        public IUserService UserService { get; set; }
+        private IUserService UserService { get; set; }
         [Inject]
-        public NavigationManager NavigationManager { get; set; }
-        public bool ShowAuthError { get; set; }
-        public string Error { get; set; }
+        private NavigationManager NavigationManager { get; set; }
+        protected bool ShowAuthError { get; set; }
+        protected string Error { get; set; }
         public async Task HandleChangePassword()
         {
             ShowAuthError = false;

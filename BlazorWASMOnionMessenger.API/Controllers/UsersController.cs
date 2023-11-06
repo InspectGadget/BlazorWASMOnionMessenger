@@ -38,21 +38,22 @@ namespace BlazorWASMOnionMessenger.API.Controllers
         }
 
         [HttpGet("page")]
-        public async Task<ActionResult<PagedEntities<UserDto>>> GetUsersPage(int page, int pageSize, string orderBy = "", bool? orderType = null, string search = "")
+        public async Task<ActionResult<PagedEntities<UserDto>>> GetUsersPage(int page, int pageSize, bool orderType, string orderBy = "", string search = "")
         {
             try
             {
-                var pageResult = await _userService.GetPage(page, pageSize, orderBy, orderType ?? false, search);
+                var pageResult = await _userService.GetPage(page, pageSize, orderBy, orderType, search);
+                pageResult.IsSuccessful = true;
                 return Ok(pageResult);
             }
             catch (RepositoryException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest( new PagedEntities<UserDto>(new List<UserDto>()) { ErrorMessage = ex.Message});
             }
         }
 
         [HttpPut("{userId}")]
-        public async Task<IActionResult> UpdateUser(string userId, [FromBody] UserDto userDto)
+        public async Task<ActionResult<ResponseDto>> UpdateUser(string userId, [FromBody] UserDto userDto)
         {
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -61,11 +62,11 @@ namespace BlazorWASMOnionMessenger.API.Controllers
                 try
                 {
                     await _userService.UpdateUser(userDto, userId);
-                    return Ok("User updated successfully.");
+                    return Ok(new ResponseDto { IsSuccessful = true});
                 }
                 catch (RepositoryException ex)
                 {
-                    return BadRequest(ex.Message);
+                    return BadRequest(new ResponseDto { ErrorMessage = ex.Message});
                 }
             }
             else
@@ -76,46 +77,46 @@ namespace BlazorWASMOnionMessenger.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<ActionResult<UserResponseDto>> Login([FromBody] UserLoginDto userLoginDto)
+        public async Task<ActionResult<UserAuthDto>> Login([FromBody] UserLoginDto userLoginDto)
         {
             try
             {
                 string token = await _userService.Login(userLoginDto);
-                return Ok(new UserResponseDto { IsSuccessful = true, Token = token });
+                return Ok(new UserAuthDto { IsSuccessful = true, Token = token });
             }
             catch (CustomAuthenticationException ex)
             {
-                return Unauthorized(new UserResponseDto { ErrorMessage = ex.Message });
+                return Unauthorized(new UserAuthDto { ErrorMessage = ex.Message });
             }
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<ActionResult<UserResponseDto>> Register([FromBody] UserRegisterDto userRegisterDto)
+        public async Task<ActionResult<UserAuthDto>> Register([FromBody] UserRegisterDto userRegisterDto)
         {
             try
             {
                 string token = await _userService.Register(userRegisterDto);
-                return Ok(new UserResponseDto { IsSuccessful = true, Token = token });
+                return Ok(new UserAuthDto { IsSuccessful = true, Token = token });
             }
             catch (CustomAuthenticationException ex)
             {
-                return BadRequest(new UserResponseDto { ErrorMessage = ex.Message });
+                return BadRequest(new UserAuthDto { ErrorMessage = ex.Message });
             }
         }
 
         [Authorize]
         [HttpPost("changepassword")]
-        public async Task<ActionResult<UserResponseDto>> ChangePassword([FromBody] UserChangePasswordDto changePasswordDto)
+        public async Task<ActionResult<UserAuthDto>> ChangePassword([FromBody] UserChangePasswordDto changePasswordDto)
         {
             try
             {
                 await _userService.ChangePassword(User.FindFirstValue(ClaimTypes.NameIdentifier), changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
-                return Ok(new UserResponseDto { IsSuccessful = true });
+                return Ok(new UserAuthDto { IsSuccessful = true });
             }
             catch (CustomAuthenticationException ex)
             {
-                return BadRequest(new UserResponseDto { ErrorMessage = ex.Message });
+                return BadRequest(new UserAuthDto { ErrorMessage = ex.Message });
             }
         }
     }

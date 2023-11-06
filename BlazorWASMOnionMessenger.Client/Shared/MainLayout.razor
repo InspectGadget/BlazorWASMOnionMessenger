@@ -17,9 +17,17 @@
                     </NavLink>
                 </NotAuthorized>
                 <Authorized>
-                    <NavLink class="nav-link" href="logout">
-                        Logout
-                    </NavLink>
+                    <RadzenProfileMenu>
+                        <Template>
+                            <RadzenGravatar Email="user@example.com">
+                            </RadzenGravatar>
+                        </Template>
+                        <ChildContent>
+                            <RadzenProfileMenuItem Text="Profile" Path="profile" Icon="account_circle"></RadzenProfileMenuItem>
+                            <RadzenProfileMenuItem Text="Change password" Path="changePassword" Icon="lock"></RadzenProfileMenuItem>
+                            <RadzenProfileMenuItem Text="Logout" Path="logout" Icon="exit_to_app"></RadzenProfileMenuItem>
+                        </ChildContent>
+                    </RadzenProfileMenu>
                 </Authorized>
             </AuthorizeView>
         </div>
