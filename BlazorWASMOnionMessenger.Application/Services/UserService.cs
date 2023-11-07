@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using BlazorWASMOnionMessenger.Application.Common.Exceptions;
-using BlazorWASMOnionMessenger.Application.Interfaces;
 using BlazorWASMOnionMessenger.Application.Interfaces.Users;
 using BlazorWASMOnionMessenger.Domain.Common;
 using BlazorWASMOnionMessenger.Domain.DTOs.User;
@@ -17,52 +16,12 @@ namespace BlazorWASMOnionMessenger.Application.Services
     public class UserService : IUserService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
 
-        public UserService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ITokenService tokenService, IMapper mapper)
+        public UserService(UserManager<ApplicationUser> userManager, IMapper mapper)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
-            _tokenService = tokenService;
             _mapper = mapper;
-        }
-
-        public async Task<string> Login(UserLoginDto userLoginDto)
-        {
-            var user = await _userManager.FindByNameAsync(userLoginDto.UserName)
-                ?? throw new CustomAuthenticationException("User not found.");
-
-            var result = await _signInManager.CheckPasswordSignInAsync(user, userLoginDto.Password, false);
-
-            if (!result.Succeeded)
-            {
-                throw new CustomAuthenticationException("Invalid password.");
-            }
-
-            return _tokenService.CreateToken(user);
-        }
-
-        public async Task<string> Register(UserRegisterDto userRegisterDto)
-        {
-            var userExists = await _userManager.FindByNameAsync(userRegisterDto.UserName) != null;
-
-            if (userExists)
-            {
-                throw new CustomAuthenticationException("User with the same username already exists.");
-            }
-
-            var user = _mapper.Map<ApplicationUser>(userRegisterDto);
-
-            var result = await _userManager.CreateAsync(user, userRegisterDto.Password);
-
-            if (!result.Succeeded)
-            {
-                throw new CustomAuthenticationException("Registration failed.");
-            }
-
-            return _tokenService.CreateToken(user);
         }
 
         public async Task ChangePassword(string userId, string currentPassword, string newPassword)
@@ -109,7 +68,7 @@ namespace BlazorWASMOnionMessenger.Application.Services
 
             var quantity = users.Count();
 
-            if (!string.IsNullOrEmpty(orderBy)) users = users.OrderBy(orderBy + " " + (orderType ? "desc" : "asc") );
+            if (!string.IsNullOrEmpty(orderBy)) users = users.OrderBy(orderBy + " " + (orderType ? "desc" : "asc"));
 
             var pageUsers = await users.Skip((page - 1) * pageSize).Take(pageSize)
                 .ProjectTo<UserDto>(_mapper.ConfigurationProvider).ToListAsync();
@@ -133,7 +92,7 @@ namespace BlazorWASMOnionMessenger.Application.Services
                     user.UserName.Contains(keyword) ||
                     user.PhoneNumber.Contains(keyword) ||
                     user.FirstName.Contains(keyword) ||
-                    user.LastName.Contains(keyword) 
+                    user.LastName.Contains(keyword)
                 );
             }
 

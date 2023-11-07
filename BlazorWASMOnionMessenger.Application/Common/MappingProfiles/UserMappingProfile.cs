@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BlazorWASMOnionMessenger.Domain.DTOs.Auth;
 using BlazorWASMOnionMessenger.Domain.DTOs.User;
 using BlazorWASMOnionMessenger.Domain.Entities;
 
@@ -8,7 +9,7 @@ namespace BlazorWASMOnionMessenger.Application.Common.MappingProfiles
     {
         public UserMappingProfile()
         {
-            CreateMap<UserRegisterDto, ApplicationUser>();
+            CreateMap<RegisterDto, ApplicationUser>();
             CreateMap<ApplicationUser, UserDto>();
         }
     }

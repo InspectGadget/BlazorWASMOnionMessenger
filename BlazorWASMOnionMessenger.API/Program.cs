@@ -1,5 +1,6 @@
 using BlazorWASMOnionMessenger.Application.Common.MappingProfiles;
 using BlazorWASMOnionMessenger.Application.Interfaces;
+using BlazorWASMOnionMessenger.Application.Interfaces.Authentication;
 using BlazorWASMOnionMessenger.Application.Interfaces.Repositories;
 using BlazorWASMOnionMessenger.Application.Interfaces.UnitOfWorks;
 using BlazorWASMOnionMessenger.Application.Interfaces.Users;
@@ -60,6 +61,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddAutoMapper(typeof(UserMappingProfile));

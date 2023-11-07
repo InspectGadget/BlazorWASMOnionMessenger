@@ -1,6 +1,7 @@
 ﻿using BlazorWASMOnionMessenger.Application.Common.Exceptions;
 using BlazorWASMOnionMessenger.Application.Interfaces.Users;
 using BlazorWASMOnionMessenger.Domain.Common;
+using BlazorWASMOnionMessenger.Domain.DTOs.Auth;
 using BlazorWASMOnionMessenger.Domain.DTOs.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ using System.Security.Claims;
 
 namespace BlazorWASMOnionMessenger.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/user")]
     public class UsersController : ControllerBase
@@ -48,7 +50,7 @@ namespace BlazorWASMOnionMessenger.API.Controllers
             }
             catch (RepositoryException ex)
             {
-                return BadRequest( new PagedEntities<UserDto>(new List<UserDto>()) { ErrorMessage = ex.Message});
+                return BadRequest(new PagedEntities<UserDto>(new List<UserDto>()) { ErrorMessage = ex.Message });
             }
         }
 
@@ -62,11 +64,11 @@ namespace BlazorWASMOnionMessenger.API.Controllers
                 try
                 {
                     await _userService.UpdateUser(userDto, userId);
-                    return Ok(new ResponseDto { IsSuccessful = true});
+                    return Ok(new ResponseDto { IsSuccessful = true });
                 }
                 catch (RepositoryException ex)
                 {
-                    return BadRequest(new ResponseDto { ErrorMessage = ex.Message});
+                    return BadRequest(new ResponseDto { ErrorMessage = ex.Message });
                 }
             }
             else
@@ -75,48 +77,17 @@ namespace BlazorWASMOnionMessenger.API.Controllers
             }
         }
 
-        [AllowAnonymous]
-        [HttpPost("login")]
-        public async Task<ActionResult<UserAuthDto>> Login([FromBody] UserLoginDto userLoginDto)
-        {
-            try
-            {
-                string token = await _userService.Login(userLoginDto);
-                return Ok(new UserAuthDto { IsSuccessful = true, Token = token });
-            }
-            catch (CustomAuthenticationException ex)
-            {
-                return Unauthorized(new UserAuthDto { ErrorMessage = ex.Message });
-            }
-        }
-
-        [AllowAnonymous]
-        [HttpPost("register")]
-        public async Task<ActionResult<UserAuthDto>> Register([FromBody] UserRegisterDto userRegisterDto)
-        {
-            try
-            {
-                string token = await _userService.Register(userRegisterDto);
-                return Ok(new UserAuthDto { IsSuccessful = true, Token = token });
-            }
-            catch (CustomAuthenticationException ex)
-            {
-                return BadRequest(new UserAuthDto { ErrorMessage = ex.Message });
-            }
-        }
-
-        [Authorize]
         [HttpPost("changepassword")]
-        public async Task<ActionResult<UserAuthDto>> ChangePassword([FromBody] UserChangePasswordDto changePasswordDto)
+        public async Task<ActionResult<AuthDto>> ChangePassword([FromBody] UserChangePasswordDto changePasswordDto)
         {
             try
             {
                 await _userService.ChangePassword(User.FindFirstValue(ClaimTypes.NameIdentifier), changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
-                return Ok(new UserAuthDto { IsSuccessful = true });
+                return Ok(new AuthDto { IsSuccessful = true });
             }
             catch (CustomAuthenticationException ex)
             {
-                return BadRequest(new UserAuthDto { ErrorMessage = ex.Message });
+                return BadRequest(new AuthDto { ErrorMessage = ex.Message });
             }
         }
     }

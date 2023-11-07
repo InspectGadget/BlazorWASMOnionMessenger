@@ -5,8 +5,6 @@ namespace BlazorWASMOnionMessenger.Application.Interfaces.Users
 {
     public interface IUserService
     {
-        Task<string> Login(UserLoginDto userLoginDto);
-        Task<string> Register(UserRegisterDto userRegisterDto);
         Task ChangePassword(string userId, string currentPassword, string newPassword);
         Task<UserDto> GetById(string userId);
         Task<PagedEntities<UserDto>> GetPage(int page, int pageSize, string orderBy, bool orderType, string search);

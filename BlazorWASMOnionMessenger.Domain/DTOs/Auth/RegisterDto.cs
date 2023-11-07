@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlazorWASMOnionMessenger.Domain.DTOs.User
+namespace BlazorWASMOnionMessenger.Domain.DTOs.Auth
 {
-    public class UserRegisterDto
+    public class RegisterDto
     {
-        [Required(ErrorMessage ="Phone number required")]
+        [Required(ErrorMessage = "Phone number required")]
         public string PhoneNumber { get; set; } = string.Empty;
         [Required]
         [StringLength(50, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters long.")]

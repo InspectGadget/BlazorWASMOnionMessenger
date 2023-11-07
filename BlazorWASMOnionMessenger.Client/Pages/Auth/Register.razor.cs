@@ -1,14 +1,14 @@
-﻿using BlazorWASMOnionMessenger.Client.Features.Users;
-using BlazorWASMOnionMessenger.Domain.DTOs.User;
+﻿using BlazorWASMOnionMessenger.Client.Features.Auth;
+using BlazorWASMOnionMessenger.Domain.DTOs.Auth;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorWASMOnionMessenger.Client.Pages.Auth
 {
     public partial class Register
     {
-        private UserRegisterDto _userRegisterDto = new UserRegisterDto();
+        private RegisterDto _userRegisterDto = new RegisterDto();
         [Inject]
-        public IUserService UserService { get; set; }
+        public IAuthService AuthService { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
         public bool ShowAuthError { get; set; }
@@ -16,7 +16,7 @@ namespace BlazorWASMOnionMessenger.Client.Pages.Auth
         public async Task HandleRegister()
         {
             ShowAuthError = false;
-            var result = await UserService.Register(_userRegisterDto);
+            var result = await AuthService.Register(_userRegisterDto);
             if (!result.IsSuccessful)
             {
                 Error = result.ErrorMessage;

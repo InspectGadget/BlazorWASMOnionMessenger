@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlazorWASMOnionMessenger.Domain.DTOs.User
+namespace BlazorWASMOnionMessenger.Domain.DTOs.Auth
 {
-    public class UserLoginDto
+    public class LoginDto
     {
-        [Required(ErrorMessage ="Username required")]
+        [Required(ErrorMessage = "Username required")]
         public string UserName { get; set; } = string.Empty;
 
         [Required]

@@ -1,4 +1,4 @@
-﻿using BlazorWASMOnionMessenger.Client.Features.Users;
+﻿using BlazorWASMOnionMessenger.Client.Features.Auth;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorWASMOnionMessenger.Client.Pages.Auth
@@ -6,13 +6,13 @@ namespace BlazorWASMOnionMessenger.Client.Pages.Auth
     public partial class Logout
     {
         [Inject]
-        public IUserService AuthenticationService { get; set; }
+        public IAuthService AuthService { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
-            await AuthenticationService.Logout();
+            await AuthService.Logout();
             NavigationManager.NavigateTo("/");
         }
     }

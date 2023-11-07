@@ -1,8 +1,8 @@
 ﻿using BlazorWASMOnionMessenger.Domain.Common;
 
-namespace BlazorWASMOnionMessenger.Domain.DTOs.User
+namespace BlazorWASMOnionMessenger.Domain.DTOs.Auth
 {
-    public class UserAuthDto : ResponseDto
+    public class AuthDto : ResponseDto
     {
         public string Token { get; set; } = string.Empty;
     }

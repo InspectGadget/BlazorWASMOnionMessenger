@@ -1,5 +1,7 @@
 ﻿@page "/users"
 @using BlazorWASMOnionMessenger.Domain.DTOs.User;
+@using Microsoft.AspNetCore.Authorization;
+@attribute [Authorize]
 
 
 <h3>Users</h3>
@@ -11,7 +13,7 @@
     <RadzenColumn Size="4">
         <RadzenLabel Text="Desc" Component="CheckBox1" Style="margin-right: 8px; vertical-align: middle;" />
         <RadzenCheckBox @bind-Value=OrderType Name="CheckBox1" TValue="bool" Change="OnCheckBoxChange" />
-        <RadzenDropDown @bind-Value=OrderBy Data=props class="mt-2" Style="width: 100%; max-width: 400px;" Change="Navigate" />
+        <RadzenDropDown @bind-Value=OrderBy Data=orderProps class="mt-2" Style="width: 100%; max-width: 400px;" Change="Navigate" />
     </RadzenColumn>
 </RadzenRow>
 

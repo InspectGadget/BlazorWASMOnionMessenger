@@ -1,22 +1,22 @@
-﻿using BlazorWASMOnionMessenger.Client.Features.Users;
-using BlazorWASMOnionMessenger.Domain.DTOs.User;
+﻿using BlazorWASMOnionMessenger.Client.Features.Auth;
+using BlazorWASMOnionMessenger.Domain.DTOs.Auth;
 using Microsoft.AspNetCore.Components;
 
 namespace BlazorWASMOnionMessenger.Client.Pages.Auth
 {
     public partial class Login
     {
-        private UserLoginDto _userLoginDto = new UserLoginDto();
+        private LoginDto _userLoginDto = new LoginDto();
         [Inject]
-        public IUserService UserService { get; set; }
+        public IAuthService AuthService { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
         public bool ShowAuthError { get; set; }
-        public string Error { get; set; }
+        public string Error { get; set; } = string.Empty;
         public async Task HandleLogin()
         {
             ShowAuthError = false;
-            var result = await UserService.Login(_userLoginDto);
+            var result = await AuthService.Login(_userLoginDto);
             if (!result.IsSuccessful)
             {
                 Error = result.ErrorMessage;
