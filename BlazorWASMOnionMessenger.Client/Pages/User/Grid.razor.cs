@@ -27,19 +27,21 @@ namespace BlazorWASMOnionMessenger.Client.Pages.User
         public bool OrderType { get; set; } = false;
         [SupplyParameterFromQuery]
         [Parameter]
-        public string? Search { get; set; } = String.Empty;
+        public string Search { get; set; } = String.Empty;
 
         protected List<UserDto> users = new List<UserDto>();
         protected int TotalUsers { get; set; }
         protected List<string> orderProps = new List<string>();
         protected List<int> pageSizeOptions = new List<int> { 2, 5, 10, 20 };
+        protected bool isLoading = false;
+
 
         protected override async Task OnInitializedAsync()
         {
             if (Page == 0) Page = 1;
             if (PageSize == 0) PageSize = 2;
             PopulateOrderProps();
-            if (OrderBy == string.Empty) OrderBy = orderProps[0];
+            if (string.IsNullOrEmpty(OrderBy)) OrderBy = orderProps[0];
             await Fetch();
         }
 
@@ -59,12 +61,14 @@ namespace BlazorWASMOnionMessenger.Client.Pages.User
 
         private async Task Fetch()
         {
+            isLoading = true;
             var result = await UserService.GetPage(Page, PageSize, OrderBy, OrderType, Search);
             if (result.IsSuccessful)
             {
                 users = result.Entities;
                 TotalUsers = result.Quantity;
             }
+            isLoading = false;
             StateHasChanged();
         }
 

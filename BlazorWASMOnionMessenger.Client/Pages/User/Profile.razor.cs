@@ -2,6 +2,7 @@
 using BlazorWASMOnionMessenger.Domain.DTOs.User;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Radzen;
 
 namespace BlazorWASMOnionMessenger.Client.Pages.User
 {
@@ -10,6 +11,15 @@ namespace BlazorWASMOnionMessenger.Client.Pages.User
         private UserDto _userDto = new UserDto();
         [Inject]
         private IUserService UserService { get; set; }
+        [Inject]
+        protected NotificationService NotificationService { get; set; }
+        protected NotificationMessage NotificationMessage { get; set; } = new NotificationMessage()
+        {
+            Severity = NotificationSeverity.Success,
+            Summary = "Successfull",
+            Detail = "Profile updated",
+            Duration = 4000
+        };
         [CascadingParameter]
         private Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
@@ -22,7 +32,15 @@ namespace BlazorWASMOnionMessenger.Client.Pages.User
         }
         private async Task UpdateProfile()
         {
-            await UserService.Update(_userDto);
+            var response = await UserService.Update(_userDto);
+            if (response.IsSuccessful)
+            {
+                NotificationService.Notify(NotificationMessage);
+            }
+            else
+            {
+                NotificationService.Notify(NotificationSeverity.Error, "Error", response.ErrorMessage, 4000);
+            }
         }
     }
 }
