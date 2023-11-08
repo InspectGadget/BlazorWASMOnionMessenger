@@ -1,15 +1,14 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using BlazorWASMOnionMessenger.Application.Common.Exceptions;
+using BlazorWASMOnionMessenger.Application.Interfaces.Common;
 using BlazorWASMOnionMessenger.Application.Interfaces.Users;
 using BlazorWASMOnionMessenger.Domain.Common;
 using BlazorWASMOnionMessenger.Domain.DTOs.User;
 using BlazorWASMOnionMessenger.Domain.Entities;
-using LinqKit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
-using System.Linq.Expressions;
 
 namespace BlazorWASMOnionMessenger.Application.Services
 {
@@ -17,11 +16,13 @@ namespace BlazorWASMOnionMessenger.Application.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly ISearchPredicateBuilder _searchPredicateBuilder;
 
-        public UserService(UserManager<ApplicationUser> userManager, IMapper mapper)
+        public UserService(UserManager<ApplicationUser> userManager, IMapper mapper, ISearchPredicateBuilder searchPredicateBuilder)
         {
             _userManager = userManager;
             _mapper = mapper;
+            _searchPredicateBuilder = searchPredicateBuilder;
         }
 
         public async Task ChangePassword(string userId, string currentPassword, string newPassword)
@@ -64,7 +65,11 @@ namespace BlazorWASMOnionMessenger.Application.Services
         {
             var users = _userManager.Users.AsQueryable();
 
-            if (!string.IsNullOrEmpty(search)) users = users.Where(BuildSearchExpression(search));
+            if (!string.IsNullOrEmpty(search))
+            {
+                users = users.Where(_searchPredicateBuilder.
+                    BuildSearchPredicate<ApplicationUser, UserDto>(search));
+            }
 
             var quantity = users.Count();
 
@@ -78,25 +83,6 @@ namespace BlazorWASMOnionMessenger.Application.Services
                 Quantity = quantity,
                 Pages = (int)Math.Ceiling((double)quantity / pageSize)
             };
-        }
-
-        private static Expression<Func<ApplicationUser, bool>> BuildSearchExpression(string search)
-        {
-            var keywords = search.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-            var predicate = PredicateBuilder.New<ApplicationUser>(false);
-
-            foreach (var keyword in keywords)
-            {
-                predicate = predicate.Or(user =>
-                    user.UserName.Contains(keyword) ||
-                    user.PhoneNumber.Contains(keyword) ||
-                    user.FirstName.Contains(keyword) ||
-                    user.LastName.Contains(keyword)
-                );
-            }
-
-            return predicate;
         }
     }
 }

@@ -1,6 +1,8 @@
+using BlazorWASMOnionMessenger.Application.Common;
 using BlazorWASMOnionMessenger.Application.Common.MappingProfiles;
 using BlazorWASMOnionMessenger.Application.Interfaces;
 using BlazorWASMOnionMessenger.Application.Interfaces.Authentication;
+using BlazorWASMOnionMessenger.Application.Interfaces.Common;
 using BlazorWASMOnionMessenger.Application.Interfaces.Repositories;
 using BlazorWASMOnionMessenger.Application.Interfaces.UnitOfWorks;
 using BlazorWASMOnionMessenger.Application.Interfaces.Users;
@@ -63,6 +65,7 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ISearchPredicateBuilder, SearchPredicateBuilder>();
 
 builder.Services.AddAutoMapper(typeof(UserMappingProfile));
 
