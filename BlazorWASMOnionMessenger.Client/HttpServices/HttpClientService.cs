@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text;
 using System.Net.Http.Headers;
-using System.Net.Http;
 using BlazorWASMOnionMessenger.Domain.Common;
 using System.Net;
 
@@ -32,7 +31,7 @@ namespace BlazorWASMOnionMessenger.Client.HttpServices
 
         public async Task<TResponse> GetAsync<TResponse>(string requestUri)
         {
-            var response = await _client.GetAsync(requestUri);
+            var response = await _client.GetAsync(requestUri); 
             var responseContent = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<TResponse>(responseContent, _options);
 

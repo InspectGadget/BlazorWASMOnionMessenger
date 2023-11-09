@@ -3,6 +3,7 @@ using BlazorWASMOnionMessenger.Client.HttpServices;
 using BlazorWASMOnionMessenger.Domain.Common;
 using System.Web;
 using BlazorWASMOnionMessenger.Domain.DTOs.Auth;
+using BlazorWASMOnionMessenger.Client.Features.Helpers;
 
 namespace BlazorWASMOnionMessenger.Client.Features.Users
 {
@@ -34,27 +35,10 @@ namespace BlazorWASMOnionMessenger.Client.Features.Users
 
         public async Task<PagedEntities<UserDto>> GetPage(int page, int pageSize, string orderBy, bool orderType, string search)
         {
-            string queryString = GenerateQueryString(page, pageSize, orderBy, orderType, search);
+            string queryString = QueryStringGenerator.GenerateQueryString(page, pageSize, orderBy, orderType, search);
             return await _httpClientService.GetAsync<PagedEntities<UserDto>>($"user/page?{queryString}");
         }
 
-        private static string GenerateQueryString(int page, int pageSize, string orderBy, bool orderType, string search)
-        {
-            var queryParameters = new System.Collections.Specialized.NameValueCollection();
-
-            queryParameters["page"] = page.ToString();
-            queryParameters["pageSize"] = pageSize.ToString();
-            queryParameters["orderBy"] = orderBy;
-            queryParameters["orderType"] = orderType.ToString();
-            queryParameters["search"] = search;
-
-            var queryString = string.Join("&",
-                queryParameters.AllKeys.Select(key =>
-                    $"{HttpUtility.UrlEncode(key)}={HttpUtility.UrlEncode(queryParameters[key])}"
-                )
-            );
-
-            return queryString;
-        }
+        
     }
 }

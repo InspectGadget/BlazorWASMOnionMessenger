@@ -1,12 +1,10 @@
-﻿@page "/users"
-@using BlazorWASMOnionMessenger.Domain.DTOs.User;
+﻿@page "/chats"
+@using BlazorWASMOnionMessenger.Domain.DTOs.Chat;
 @using Microsoft.AspNetCore.Authorization;
 @attribute [Authorize]
-@inherits BaseGrid<UserDto>
+@inherits BaseGrid<ChatDto>
 
-
-
-<h3>Users</h3>
+<h3>Chats</h3>
 <RadzenRow>
     <RadzenColumn Size="8">
         <RadzenTextBox Placeholder="Search..." @bind-Value="Search" class="w-15" />
@@ -19,13 +17,15 @@
     </RadzenColumn>
 </RadzenRow>
 
-<RadzenDataGrid TItem="UserDto" Data="Items" IsLoading="isLoading">
+<RadzenDataGrid TItem="ChatDto" Data="Items" IsLoading="isLoading">
     <Columns>
-        <RadzenDataGridColumn TItem="UserDto" Property="Id" Title="ID" />
-        <RadzenDataGridColumn TItem="UserDto" Property="UserName" Title="Username" />
-        <RadzenDataGridColumn TItem="UserDto" Property="FirstName" Title="First Name" />
-        <RadzenDataGridColumn TItem="UserDto" Property="LastName" Title="Last Name" />
-        <RadzenDataGridColumn TItem="UserDto" Property="PhoneNumber" Title="Phone Number" />
+        <RadzenDataGridColumn TItem="ChatDto" Property="Id" Title="ID" />
+        <RadzenDataGridColumn TItem="ChatDto" Property="Name" Title="Name" />
+        <RadzenDataGridColumn TItem="ChatDto" Property="ChatType" Title="Type" />
+        <RadzenDataGridColumn TItem="ChatDto" Property="CreatedAt" Title="Created At" />
+        <RadzenDataGridColumn TItem="ChatDto" Property="LastMessagePreview" Title="Last Message" />
+        <RadzenDataGridColumn TItem="ChatDto" Property="LastMessageDate" Title="Message Date" />
+        <RadzenDataGridColumn TItem="ChatDto" Property="LastMessageSender" Title="Message Sender" />
     </Columns>
 </RadzenDataGrid>
 <RadzenRow>

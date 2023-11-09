@@ -10,10 +10,10 @@ namespace BlazorWASMOnionMessenger.Application.Services
 {
     public class TokenService : ITokenService
     {
-        private readonly IConfiguration _config;
+        private readonly IConfiguration config;
         public TokenService(IConfiguration config)
         {
-            _config = config;
+            this.config = config;
         }
 
         public string CreateToken(ApplicationUser user)
@@ -24,7 +24,7 @@ namespace BlazorWASMOnionMessenger.Application.Services
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:Secret"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Secret"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor

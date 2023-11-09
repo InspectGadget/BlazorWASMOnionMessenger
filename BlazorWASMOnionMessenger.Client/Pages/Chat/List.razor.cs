@@ -1,16 +1,19 @@
-﻿using BlazorWASMOnionMessenger.Client.Features.Users;
+﻿using BlazorWASMOnionMessenger.Client.Features.Chats;
 using BlazorWASMOnionMessenger.Client.Shared;
-using BlazorWASMOnionMessenger.Domain.DTOs.User;
+using BlazorWASMOnionMessenger.Domain.DTOs.Chat;
 using Microsoft.AspNetCore.Components;
 
-namespace BlazorWASMOnionMessenger.Client.Pages.User
+namespace BlazorWASMOnionMessenger.Client.Pages.Chat
 {
-    public partial class Grid : BaseGrid<UserDto>
+    public partial class List : BaseGrid<ChatDto>
     {
         [Inject]
-        private IUserService UserService { get; set; } = null!;
+        private NavigationManager NavigationManager { get; set; }
         [Inject]
-        private NavigationManager NavigationManager { get; set; } = null!;
+        private IChatService ChatService { get; set; }
+
+        private const string Route = "/chats";
+
 
         protected override async Task OnInitializedAsync()
         {
@@ -23,19 +26,20 @@ namespace BlazorWASMOnionMessenger.Client.Pages.User
 
         protected override async Task Navigate()
         {
-            NavigationManager.NavigateTo($"/users?page={Page}&pageSize={PageSize}&orderBy={OrderBy}&orderType={OrderType}&search={Search}");
+            NavigationManager.NavigateTo(ConstructRouteTemplate(Route));
             await Fetch();
         }
 
         private async Task Fetch()
         {
             isLoading = true;
-            var result = await UserService.GetPage(Page, PageSize, OrderBy, OrderType, Search);
+            var result = await ChatService.GetPage(Page, PageSize, OrderBy, OrderType, Search);
             if (result.IsSuccessful)
             {
                 Items = result.Entities;
                 Total = result.Quantity;
             }
+            
             isLoading = false;
             StateHasChanged();
         }
