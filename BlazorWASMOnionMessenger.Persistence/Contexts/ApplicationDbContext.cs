@@ -12,7 +12,7 @@ namespace BlazorWASMOnionMessenger.Persistence.Contexts
         }
 
         public DbSet<Chat> Chats { get; set; }
-        public DbSet<Chat> ChatTypes { get; set; }
+        public DbSet<ChatType> ChatTypes { get; set; }
         public DbSet<Participant> Participants { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<UnreadMessage> UnreadMessages { get; set; }

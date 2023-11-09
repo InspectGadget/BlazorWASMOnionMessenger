@@ -13,7 +13,7 @@ namespace BlazorWASMOnionMessenger.Domain.Entities
         public string SenderId { get; set; } = string.Empty;
         public ApplicationUser ApplicationUser { get; set; } = null!;
 
-        public string Message_text { get; set; } = string.Empty;
+        public string MessageText { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
         public string AttachmentUrl { get; set; } = string.Empty;
         public ICollection<UnreadMessage> UnreadMessages { get; } = new List<UnreadMessage>();
