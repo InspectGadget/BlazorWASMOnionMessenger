@@ -2,6 +2,7 @@ using BlazorWASMOnionMessenger.Application.Common;
 using BlazorWASMOnionMessenger.Application.Common.MappingProfiles;
 using BlazorWASMOnionMessenger.Application.Interfaces;
 using BlazorWASMOnionMessenger.Application.Interfaces.Authentication;
+using BlazorWASMOnionMessenger.Application.Interfaces.Chats;
 using BlazorWASMOnionMessenger.Application.Interfaces.Common;
 using BlazorWASMOnionMessenger.Application.Interfaces.Repositories;
 using BlazorWASMOnionMessenger.Application.Interfaces.UnitOfWorks;
@@ -66,6 +67,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ISearchPredicateBuilder, SearchPredicateBuilder>();
+builder.Services.AddScoped<IChatService, ChatService>();
 
 builder.Services.AddAutoMapper(typeof(UserMappingProfile));
 

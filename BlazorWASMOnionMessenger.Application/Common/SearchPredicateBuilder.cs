@@ -11,12 +11,21 @@ namespace BlazorWASMOnionMessenger.Application.Common
         private const string ContainsMethodName = "Contains";
         public Expression<Func<T, bool>> BuildSearchPredicate<T, TDTO>(string search)
         {
+            if (string.IsNullOrEmpty(search))
+            {
+                return PredicateBuilder.New<T>(true);
+            }
             var keywords = search.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
             var predicate = PredicateBuilder.New<T>(false);
-            
+
+            var propertiesInT = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(prop => prop.PropertyType == typeof(string));
+
             var properties = typeof(TDTO).GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                        .Where(x => x.PropertyType == typeof(string));
+                .Where(propDTO => propDTO.PropertyType == typeof(string) &&
+                                  propertiesInT.Any(propT => propT.Name == propDTO.Name))
+                .ToList();
 
             foreach (var property in properties)
             {
@@ -33,7 +42,5 @@ namespace BlazorWASMOnionMessenger.Application.Common
             }
             return predicate;
         }
-
-        
     }
 }

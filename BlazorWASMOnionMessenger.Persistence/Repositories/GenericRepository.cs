@@ -3,6 +3,8 @@ using BlazorWASMOnionMessenger.Domain.Common;
 using BlazorWASMOnionMessenger.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Data.Entity;
+using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 
 namespace BlazorWASMOnionMessenger.Persistence.Repositories
@@ -32,6 +34,25 @@ namespace BlazorWASMOnionMessenger.Persistence.Repositories
             return await _dbContext
             .Set<T>()
             .ToListAsync();
+        }
+
+        public IQueryable<T> GetAllQueryable(
+        Expression<Func<T, bool>> filter = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null)
+        {
+            IQueryable<T> query = _dbContext.Set<T>().AsQueryable();
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
+
+            return query;
         }
 
         public async Task<T> GetByIdAsync(int id)

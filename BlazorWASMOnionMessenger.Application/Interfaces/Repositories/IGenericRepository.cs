@@ -7,14 +7,11 @@ namespace BlazorWASMOnionMessenger.Application.Interfaces.Repositories
     {
         Task<T> GetByIdAsync(int id);
         Task<IEnumerable<T>> GetAllAsync();
+        public IQueryable<T> GetAllQueryable(
+        Expression<Func<T, bool>> filter = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null);
         Task AddAsync(T entity);
         Task DeleteAsync(T entity);
         Task UpdateAsync(T entity);
-        /*
-        Task<PagedEntities<T>> GetPageAsync(Expression<Func<T, T>> select, int page, int pageSize, 
-            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null);
-        Task<PagedEntities<T>> FindPageAsync(Expression<Func<T, bool>> predicate, Expression<Func<T, T>> select, 
-            int page, int pageSize, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null);
-        */
     }
 }
