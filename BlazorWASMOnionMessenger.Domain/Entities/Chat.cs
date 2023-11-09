@@ -5,6 +5,7 @@ namespace BlazorWASMOnionMessenger.Domain.Entities
 {
     public class Chat : BaseEntity
     {
+        public string Name { get; set; } = String.Empty;
         [ForeignKey("ChatType")]
         public int TypeId { get; set; }
         public ChatType ChatType { get; set; } = null!;
