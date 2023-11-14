@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BlazorWASMOnionMessenger.Application\BlazorWASMOnionMessenger.Application.csproj" />
     <ProjectReference Include="..\BlazorWASMOnionMessenger.Domain\BlazorWASMOnionMessenger.Domain.csproj" />
+    <ProjectReference Include="..\BlazorWASMOnionMessenger.Infrastructure\BlazorWASMOnionMessenger.Infrastructure.csproj" />
     <ProjectReference Include="..\BlazorWASMOnionMessenger.Persistence\BlazorWASMOnionMessenger.Persistence.csproj" />
   </ItemGroup>
 

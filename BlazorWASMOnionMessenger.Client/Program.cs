@@ -3,6 +3,8 @@ using BlazorWASMOnionMessenger.Client;
 using BlazorWASMOnionMessenger.Client.AuthProviders;
 using BlazorWASMOnionMessenger.Client.Features.Auth;
 using BlazorWASMOnionMessenger.Client.Features.Chats;
+using BlazorWASMOnionMessenger.Client.Features.Helpers;
+using BlazorWASMOnionMessenger.Client.Features.Messages;
 using BlazorWASMOnionMessenger.Client.Features.Users;
 using BlazorWASMOnionMessenger.Client.HttpServices;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -23,6 +25,13 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IHttpClientService, HttpClientService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddSingleton<JwtTokenParser>();
+builder.Services.AddScoped<ISignalRMessageService, SignalRMessageService>( provider =>
+{
+    var hubUrl = builder.Configuration["hubUrl"];
+    return new SignalRMessageService(hubUrl);
+});
 builder.Services.AddScoped<NotificationService>();
 
 await builder.Build().RunAsync();

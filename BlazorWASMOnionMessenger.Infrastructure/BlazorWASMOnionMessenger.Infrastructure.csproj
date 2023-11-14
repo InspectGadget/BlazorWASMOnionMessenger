@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorWASMOnionMessenger.Application\BlazorWASMOnionMessenger.Application.csproj" />
+    <ProjectReference Include="..\BlazorWASMOnionMessenger.Domain\BlazorWASMOnionMessenger.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

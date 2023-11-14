@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[ChatTypes]
 (
-	[Id] INT NOT NULL PRIMARY KEY, 
+	[Id] INT Identity(1,1) NOT NULL PRIMARY KEY, 
     [Name] VARCHAR(50) NOT NULL
 )

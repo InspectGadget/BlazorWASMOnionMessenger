@@ -3,9 +3,9 @@ using System.Security.Claims;
 
 namespace BlazorWASMOnionMessenger.Client.Features.Helpers
 {
-    public static class JwtTokenParser
+    public class JwtTokenParser
     {
-        public static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
+        public IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
         {
             var handler = new JwtSecurityTokenHandler();
             var jsonToken = handler.ReadToken(jwt) as JwtSecurityToken;

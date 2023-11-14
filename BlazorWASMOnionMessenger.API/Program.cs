@@ -4,11 +4,14 @@ using BlazorWASMOnionMessenger.Application.Interfaces;
 using BlazorWASMOnionMessenger.Application.Interfaces.Authentication;
 using BlazorWASMOnionMessenger.Application.Interfaces.Chats;
 using BlazorWASMOnionMessenger.Application.Interfaces.Common;
+using BlazorWASMOnionMessenger.Application.Interfaces.Message;
+using BlazorWASMOnionMessenger.Application.Interfaces.Participant;
 using BlazorWASMOnionMessenger.Application.Interfaces.Repositories;
 using BlazorWASMOnionMessenger.Application.Interfaces.UnitOfWorks;
 using BlazorWASMOnionMessenger.Application.Interfaces.Users;
 using BlazorWASMOnionMessenger.Application.Services;
 using BlazorWASMOnionMessenger.Domain.Entities;
+using BlazorWASMOnionMessenger.Infrastructure.SignalR;
 using BlazorWASMOnionMessenger.Persistence.Contexts;
 using BlazorWASMOnionMessenger.Persistence.Repositories;
 using BlazorWASMOnionMessenger.Persistence.UnitOfWorks;
@@ -68,9 +71,12 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ISearchPredicateBuilder, SearchPredicateBuilder>();
 builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<IParticipantService, ParticipantService>();
 
 builder.Services.AddAutoMapper(typeof(UserMappingProfile));
 
+builder.Services.AddSignalR();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -92,5 +98,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<MessageHub>("/hubs/message");
 
 app.Run();

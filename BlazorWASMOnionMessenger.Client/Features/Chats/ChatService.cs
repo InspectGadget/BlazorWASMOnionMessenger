@@ -16,7 +16,7 @@ namespace BlazorWASMOnionMessenger.Client.Features.Chats
         }
         public async Task<PagedEntities<ChatDto>> GetPage(int page, int pageSize, string orderBy, bool orderType, string search)
         {
-            string queryString = QueryStringGenerator.GenerateQueryString(page, pageSize, orderBy, orderType, search);
+            string queryString = QueryStringGenerator.GenerateGridQueryString(page, pageSize, orderBy, orderType, search);
             return await httpClientService.GetAsync<PagedEntities<ChatDto>>($"chat/page?{queryString}");
         }
     }

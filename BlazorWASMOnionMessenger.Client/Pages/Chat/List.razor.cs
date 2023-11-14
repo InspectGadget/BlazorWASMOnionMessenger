@@ -2,6 +2,7 @@
 using BlazorWASMOnionMessenger.Client.Shared;
 using BlazorWASMOnionMessenger.Domain.DTOs.Chat;
 using Microsoft.AspNetCore.Components;
+using Radzen;
 
 namespace BlazorWASMOnionMessenger.Client.Pages.Chat
 {
@@ -28,6 +29,10 @@ namespace BlazorWASMOnionMessenger.Client.Pages.Chat
         {
             NavigationManager.NavigateTo(ConstructRouteTemplate(Route));
             await Fetch();
+        }
+        protected void OnRowClick(DataGridRowMouseEventArgs<ChatDto> row)
+        {
+            NavigationManager.NavigateTo($"/chat/{row.Data.Id}");
         }
 
         private async Task Fetch()

@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[Participants]
 (
-	[Id] INT NOT NULL PRIMARY KEY, 
+	[Id] INT Identity(1,1) NOT NULL PRIMARY KEY, 
     [ChatId] INT NOT NULL, 
     [UserId] [nvarchar](450) NOT NULL, 
     [RoleId] INT NOT NULL, 

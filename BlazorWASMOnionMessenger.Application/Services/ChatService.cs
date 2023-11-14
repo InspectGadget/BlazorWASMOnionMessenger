@@ -29,7 +29,7 @@ namespace BlazorWASMOnionMessenger.Application.Services
 
             var searchPredicate = searchPredicateBuilder.BuildSearchPredicate<Chat, ChatDto>(search);
 
-            var query = chatRepository.GetAllQueryable(searchPredicate);
+            var query = chatRepository.GetQueryable(searchPredicate);
 
             var quantity = query.Count();
 

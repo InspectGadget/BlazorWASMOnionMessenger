@@ -64,7 +64,7 @@
     <Build Include="dbo\Chats.sql" />
     <Build Include="dbo\Participants.sql" />
     <Build Include="dbo\Messages.sql" />
-    <Build Include="dbo\UnreadMessage.sql" />
+    <Build Include="dbo\UnreadMessages.sql" />
     <Build Include="dbo\ChatTypes.sql" />
     <Build Include="dbo\AspNetRoleClaims.sql" />
     <Build Include="dbo\AspNetRoles.sql" />

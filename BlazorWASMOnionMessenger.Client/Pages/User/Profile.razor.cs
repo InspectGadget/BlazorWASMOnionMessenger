@@ -8,7 +8,7 @@ namespace BlazorWASMOnionMessenger.Client.Pages.User
 {
     public partial class Profile : ComponentBase
     {
-        private UserDto _userDto = new UserDto();
+        private UserDto userDto = new UserDto();
         [Inject]
         private IUserService UserService { get; set; }
         [Inject]
@@ -28,11 +28,11 @@ namespace BlazorWASMOnionMessenger.Client.Pages.User
             var authState = await AuthenticationStateTask;
             var user = authState.User;
             var userIdClaim = user.FindFirst("nameid");
-            _userDto = await UserService.GetById(userIdClaim.Value);
+            userDto = await UserService.GetById(userIdClaim.Value);
         }
         private async Task UpdateProfile()
         {
-            var response = await UserService.Update(_userDto);
+            var response = await UserService.Update(userDto);
             if (response.IsSuccessful)
             {
                 NotificationService.Notify(NotificationMessage);

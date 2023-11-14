@@ -29,7 +29,7 @@ namespace BlazorWASMOnionMessenger.Application.Services
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(claims),
+                Subject = new ClaimsIdentity(claims, "jwtAuth"),
                 Expires = DateTime.Now.AddDays(2),
                 SigningCredentials = creds
             };

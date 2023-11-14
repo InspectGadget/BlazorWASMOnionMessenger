@@ -2,7 +2,6 @@
 using BlazorWASMOnionMessenger.Domain.Common;
 using BlazorWASMOnionMessenger.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Data.Entity;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
@@ -11,36 +10,47 @@ namespace BlazorWASMOnionMessenger.Persistence.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly ApplicationDbContext dbContext;
 
         public GenericRepository(ApplicationDbContext dbContext)
         {
-            _dbContext = dbContext;
+            this.dbContext = dbContext;
         }
 
-        public async Task AddAsync(T entity)
+        public void Add(T entity)
         {
-            await _dbContext.Set<T>().AddAsync(entity);
+             dbContext.Set<T>().Add(entity);
         }
 
-        public Task DeleteAsync(T entity)
+        public void Delete(T entity)
         {
-            _dbContext.Set<T>().Remove(entity);
-            return Task.CompletedTask;
+            dbContext.Set<T>().Remove(entity);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<List<T>> GetAllAsync(
+            Expression<Func<T, bool>> filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null)
         {
-            return await _dbContext
-            .Set<T>()
-            .ToListAsync();
+            IQueryable<T> query = dbContext.Set<T>();
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
+
+            return await query.ToListAsync();
         }
 
-        public IQueryable<T> GetAllQueryable(
+        public IQueryable<T> GetQueryable(
         Expression<Func<T, bool>> filter = null,
         Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null)
         {
-            IQueryable<T> query = _dbContext.Set<T>().AsQueryable();
+            IQueryable<T> query = dbContext.Set<T>().AsQueryable();
 
             if (filter != null)
             {
@@ -57,14 +67,17 @@ namespace BlazorWASMOnionMessenger.Persistence.Repositories
 
         public async Task<T> GetByIdAsync(int id)
         {
-            return await _dbContext.Set<T>().FindAsync(id);
+            return await dbContext.Set<T>().FindAsync(id);
         }
 
-        public Task UpdateAsync(T entity)
+        public void Update(T entity)
         {
-            T exist = _dbContext.Set<T>().Find(entity.Id);
-            _dbContext.Entry(exist).CurrentValues.SetValues(entity);
-            return Task.CompletedTask;
+            throw new NotImplementedException();
+        }
+
+        public void DeleteRange(IEnumerable<T> entities)
+        {
+            dbContext.Set<T>().RemoveRange(entities);
         }
     }
 }

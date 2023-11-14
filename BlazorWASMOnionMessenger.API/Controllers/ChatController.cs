@@ -2,7 +2,6 @@
 using BlazorWASMOnionMessenger.Application.Interfaces.Chats;
 using BlazorWASMOnionMessenger.Domain.Common;
 using BlazorWASMOnionMessenger.Domain.DTOs.Chat;
-using BlazorWASMOnionMessenger.Domain.DTOs.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

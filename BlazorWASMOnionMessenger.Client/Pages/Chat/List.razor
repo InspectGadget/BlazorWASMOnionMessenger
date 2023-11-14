@@ -17,7 +17,7 @@
     </RadzenColumn>
 </RadzenRow>
 
-<RadzenDataGrid TItem="ChatDto" Data="Items" IsLoading="isLoading">
+<RadzenDataGrid TItem="ChatDto" Data="Items" IsLoading="isLoading" RowClick="OnRowClick">
     <Columns>
         <RadzenDataGridColumn TItem="ChatDto" Property="Id" Title="ID" />
         <RadzenDataGridColumn TItem="ChatDto" Property="Name" Title="Name" />
