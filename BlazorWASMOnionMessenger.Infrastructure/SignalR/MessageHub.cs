@@ -27,5 +27,21 @@ namespace BlazorWASMOnionMessenger.Infrastructure.SignalR
             var participantIds = participant.Select(participant => participant.UserId);
             await Clients.Users(participantIds).ReceiveMessage(message);
         }
+
+        public async Task DeleteMessageFromChat(MessageDto messageDto)
+        {
+            await messageService.DeleteMessageAsync(messageDto.Id);
+            var participant = await participantService.GetByChatIdAsync(messageDto.ChatId);
+            var participantIds = participant.Select(participant => participant.UserId);
+            await Clients.Users(participantIds).DeleteMessage(messageDto);
+        }
+
+        public async Task UpdateMessageInChat(MessageDto messageDto)
+        {
+            await messageService.UpdateMessage(messageDto);
+            var participant = await participantService.GetByChatIdAsync(messageDto.ChatId);
+            var participantIds = participant.Select(participant => participant.UserId);
+            await Clients.Users(participantIds).UpdateMessage(messageDto);
+        }
     }
 }

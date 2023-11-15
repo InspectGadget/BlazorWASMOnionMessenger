@@ -14,11 +14,11 @@ namespace BlazorWASMOnionMessenger.API.Controllers
     [Route("api/user")]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IUserService userService;
 
         public UsersController(IUserService userService)
         {
-            _userService = userService;
+            this.userService = userService;
         }
 
         [HttpGet("{userId}")]
@@ -26,7 +26,7 @@ namespace BlazorWASMOnionMessenger.API.Controllers
         {
             try
             {
-                var userDto = await _userService.GetById(userId);
+                var userDto = await userService.GetById(userId);
                 if (userDto != null)
                 {
                     return Ok(userDto);
@@ -44,7 +44,7 @@ namespace BlazorWASMOnionMessenger.API.Controllers
         {
             try
             {
-                var pageResult = await _userService.GetPage(page, pageSize, orderBy, orderType, search);
+                var pageResult = await userService.GetPage(page, pageSize, orderBy, orderType, search);
                 pageResult.IsSuccessful = true;
                 return Ok(pageResult);
             }
@@ -63,7 +63,7 @@ namespace BlazorWASMOnionMessenger.API.Controllers
             {
                 try
                 {
-                    await _userService.UpdateUser(userDto, userId);
+                    await userService.UpdateUser(userDto, userId);
                     return Ok(new ResponseDto { IsSuccessful = true });
                 }
                 catch (RepositoryException ex)
@@ -82,7 +82,7 @@ namespace BlazorWASMOnionMessenger.API.Controllers
         {
             try
             {
-                await _userService.ChangePassword(User.FindFirstValue(ClaimTypes.NameIdentifier), changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
+                await userService.ChangePassword(User.FindFirstValue(ClaimTypes.NameIdentifier), changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
                 return Ok(new AuthDto { IsSuccessful = true });
             }
             catch (CustomAuthenticationException ex)

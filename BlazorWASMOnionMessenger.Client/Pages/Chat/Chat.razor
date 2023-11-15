@@ -6,8 +6,7 @@
         <div class="messages" @ref="messagesContainerRef">
             @foreach (var message in Messages)
             {
-                <RadzenPanelItem>
-                    <div class="message-container @(MessageContainerClass(message.SenderId))">
+                <div class="message-container @(MessageContainerClass(message.SenderId))" @oncontextmenu="@(args => ShowContextMenuWithItems(args, message))" @oncontextmenu:preventDefault="true">
                         <div class="sender-name">
                             <RadzenLabel Text="@message.SenderName" />
                         </div>
@@ -18,13 +17,19 @@
                             <RadzenLabel Text="@message.CreatedAt.ToShortTimeString()" />
                         </div>
                     </div>
-                </RadzenPanelItem>
             }
         </div>
 
         <div>
             <RadzenTextBox class="message-box" @bind-Value="NewMessage.MessageText" />
-            <RadzenButton Text="Send" Click="sendMessage" />
+            @if (isUpdating)
+            {
+                <RadzenButton Text="Update" Click="UpdateMessage" />
+            }
+            else
+            {
+                <RadzenButton Text="Send" Click="SendMessage" />
+            }
         </div>
     </RadzenColumn>
     <RadzenColumn Size="4">

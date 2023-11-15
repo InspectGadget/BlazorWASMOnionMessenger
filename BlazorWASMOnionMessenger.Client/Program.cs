@@ -33,5 +33,6 @@ builder.Services.AddScoped<ISignalRMessageService, SignalRMessageService>( provi
     return new SignalRMessageService(hubUrl);
 });
 builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<ContextMenuService>();
 
 await builder.Build().RunAsync();

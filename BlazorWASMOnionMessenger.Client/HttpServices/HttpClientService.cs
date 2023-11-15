@@ -8,13 +8,13 @@ namespace BlazorWASMOnionMessenger.Client.HttpServices
 {
     public class HttpClientService : IHttpClientService
     {
-        private readonly HttpClient _client;
-        private readonly JsonSerializerOptions _options;
+        private readonly HttpClient httpClient;
+        private readonly JsonSerializerOptions options;
 
         public HttpClientService(HttpClient client)
         {
-            _client = client;
-            _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            httpClient = client;
+            options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         }
 
         public async Task<TResponse> PostAsync<TRequest, TResponse>(string requestUri, TRequest requestDto)
@@ -22,18 +22,18 @@ namespace BlazorWASMOnionMessenger.Client.HttpServices
             var content = JsonSerializer.Serialize(requestDto);
             var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-            var response = await _client.PostAsync(requestUri, bodyContent);
+            var response = await httpClient.PostAsync(requestUri, bodyContent);
             var responseContent = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<TResponse>(responseContent, _options);
+            var result = JsonSerializer.Deserialize<TResponse>(responseContent, options);
 
             return result;
         }
 
         public async Task<TResponse> GetAsync<TResponse>(string requestUri)
         {
-            var response = await _client.GetAsync(requestUri); 
+            var response = await httpClient.GetAsync(requestUri); 
             var responseContent = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<TResponse>(responseContent, _options);
+            var result = JsonSerializer.Deserialize<TResponse>(responseContent, options);
 
             return result;
 
@@ -44,23 +44,23 @@ namespace BlazorWASMOnionMessenger.Client.HttpServices
             var content = JsonSerializer.Serialize(requestDto);
             var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-            var response = await _client.PutAsync(requestUri, bodyContent);
+            var response = await httpClient.PutAsync(requestUri, bodyContent);
             var responseContent = await response.Content.ReadAsStringAsync();
             if (response.StatusCode == HttpStatusCode.Forbidden) return new ResponseDto { ErrorMessage = "Forbidden" };
 
-            var result = JsonSerializer.Deserialize<ResponseDto>(responseContent, _options);
+            var result = JsonSerializer.Deserialize<ResponseDto>(responseContent, options);
             return result;
 
         }
 
         public void SetAuthorizationHeader(string token)
         {
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
         }
 
         public void RemoveAuthorizationHeader()
         {
-            _client.DefaultRequestHeaders.Authorization = null;
+            httpClient.DefaultRequestHeaders.Authorization = null;
         }
     }
 }

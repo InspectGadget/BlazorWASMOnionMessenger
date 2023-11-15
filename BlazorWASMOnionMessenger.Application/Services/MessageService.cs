@@ -55,5 +55,23 @@ namespace BlazorWASMOnionMessenger.Application.Services
                 .ProjectTo<MessageDto>(mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
         }
+
+        public async Task DeleteMessageAsync(int messageId)
+        {
+            var message = await unitOfWork.Repository<Message>().GetByIdAsync(messageId);
+            if (message != null)
+            {
+                unitOfWork.Repository<Message>().Delete(message);
+                await unitOfWork.Save();
+            }
+        }
+
+        public async Task UpdateMessage(MessageDto messageDto)
+        {
+            var message = await unitOfWork.Repository<Message>().GetByIdAsync(messageDto.Id);
+            message.MessageText = messageDto.MessageText;
+            message.AttachmentUrl = messageDto.AttachmentUrl;
+            await unitOfWork.Save();
+        }
     }
 }

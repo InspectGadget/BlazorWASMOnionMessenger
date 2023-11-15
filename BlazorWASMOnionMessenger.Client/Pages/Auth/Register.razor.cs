@@ -6,7 +6,7 @@ namespace BlazorWASMOnionMessenger.Client.Pages.Auth
 {
     public partial class Register
     {
-        private RegisterDto _userRegisterDto = new RegisterDto();
+        private RegisterDto userRegisterDto = new RegisterDto();
         [Inject]
         public IAuthService AuthService { get; set; }
         [Inject]
@@ -16,7 +16,7 @@ namespace BlazorWASMOnionMessenger.Client.Pages.Auth
         public async Task HandleRegister()
         {
             ShowAuthError = false;
-            var result = await AuthService.Register(_userRegisterDto);
+            var result = await AuthService.Register(userRegisterDto);
             if (!result.IsSuccessful)
             {
                 Error = result.ErrorMessage;

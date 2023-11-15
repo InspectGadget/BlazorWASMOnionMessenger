@@ -70,11 +70,6 @@ namespace BlazorWASMOnionMessenger.Persistence.Repositories
             return await dbContext.Set<T>().FindAsync(id);
         }
 
-        public void Update(T entity)
-        {
-            throw new NotImplementedException();
-        }
-
         public void DeleteRange(IEnumerable<T> entities)
         {
             dbContext.Set<T>().RemoveRange(entities);

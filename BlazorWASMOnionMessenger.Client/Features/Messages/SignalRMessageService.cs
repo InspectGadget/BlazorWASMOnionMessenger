@@ -8,7 +8,9 @@ namespace BlazorWASMOnionMessenger.Client.Features.Messages
         private readonly string hubUrl;
         private HubConnection hubConnection;
 
-        public event Action<MessageDto> OnMessageReceived;
+        public event Action<MessageDto> OnReceiveMessage;
+        public event Action<MessageDto> OnUpdateMessage;
+        public event Action<MessageDto> OnDeleteMessage;
 
         public SignalRMessageService(string hubUrl)
         {
@@ -30,7 +32,15 @@ namespace BlazorWASMOnionMessenger.Client.Features.Messages
         {
             hubConnection.On<MessageDto>("ReceiveMessage", message =>
             {
-                OnMessageReceived?.Invoke(message);
+                OnReceiveMessage?.Invoke(message);
+            });
+            hubConnection.On<MessageDto>("UpdateMessage", message =>
+            {
+                OnUpdateMessage?.Invoke(message);
+            });
+            hubConnection.On<MessageDto>("DeleteMessage", message =>
+            {
+                OnDeleteMessage?.Invoke(message);
             });
         }
 
@@ -51,14 +61,44 @@ namespace BlazorWASMOnionMessenger.Client.Features.Messages
         {
             await hubConnection.SendAsync("SendMessageToChat", newMessageDto);
         }
-        public void SubscribeToMessageReceived(Action<MessageDto> handler)
+        public async Task UpdateMessageInChat(MessageDto messageDto)
         {
-            OnMessageReceived += handler;
+            await hubConnection.SendAsync("UpdateMessageInChat", messageDto);
         }
 
-        public void UnsubscribeFromMessageReceived(Action<MessageDto> handler)
+        public async Task DeleteMessageFromChat(MessageDto messageDto)
         {
-            OnMessageReceived -= handler;
+            await hubConnection.SendAsync("DeleteMessageFromChat", messageDto);
+        }
+
+        public void SubscribeToReceiveMessage(Action<MessageDto> handler)
+        {
+            OnReceiveMessage += handler;
+        }
+
+        public void UnsubscribeFromReceiveMessage(Action<MessageDto> handler)
+        {
+            OnReceiveMessage -= handler;
+        }
+
+        public void SubscribeToDeleteMessage(Action<MessageDto> handler)
+        {
+            OnDeleteMessage += handler;
+        }
+
+        public void UnsubscribeFromDeleteMessage(Action<MessageDto> handler)
+        {
+            OnDeleteMessage -= handler;
+        }
+
+        public void SubscribeToUpdateMessage(Action<MessageDto> handler)
+        {
+            OnUpdateMessage += handler;
+        }
+
+        public void UnsubscribeFromUpdateMessage(Action<MessageDto> handler)
+        {
+            OnUpdateMessage -= handler;
         }
     }
 }

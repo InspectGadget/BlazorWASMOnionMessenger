@@ -11,11 +11,11 @@ namespace BlazorWASMOnionMessenger.API.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService _authService;
+        private readonly IAuthService authService;
 
         public AuthController(IAuthService authService)
         {
-            _authService = authService;
+            this.authService = authService;
         }
 
         [HttpPost("login")]
@@ -23,7 +23,7 @@ namespace BlazorWASMOnionMessenger.API.Controllers
         {
             try
             {
-                string token = await _authService.Login(userLoginDto);
+                string token = await authService.Login(userLoginDto);
                 return Ok(new AuthDto { IsSuccessful = true, Token = token });
             }
             catch (CustomAuthenticationException ex)
@@ -37,7 +37,7 @@ namespace BlazorWASMOnionMessenger.API.Controllers
         {
             try
             {
-                string token = await _authService.Register(userRegisterDto);
+                string token = await authService.Register(userRegisterDto);
                 return Ok(new AuthDto { IsSuccessful = true, Token = token });
             }
             catch (CustomAuthenticationException ex)

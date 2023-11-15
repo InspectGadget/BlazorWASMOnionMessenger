@@ -9,36 +9,36 @@ namespace BlazorWASMOnionMessenger.Persistence.UnitOfWorks
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly ApplicationDbContext _dbContext;
-        private Hashtable _repositories;
+        private readonly ApplicationDbContext dbContext;
+        private Hashtable repositories;
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public IGenericRepository<T> Repository<T>() where T : BaseEntity
         {
-            if (_repositories == null)
-                _repositories = new Hashtable();
+            if (repositories == null)
+                repositories = new Hashtable();
 
             var type = typeof(T).Name;
 
-            if (!_repositories.ContainsKey(type))
+            if (!repositories.ContainsKey(type))
             {
                 var repositoryType = typeof(GenericRepository<>);
 
-                var repositoryInstance = Activator.CreateInstance(repositoryType.MakeGenericType(typeof(T)), _dbContext);
+                var repositoryInstance = Activator.CreateInstance(repositoryType.MakeGenericType(typeof(T)), dbContext);
 
-                _repositories.Add(type, repositoryInstance);
+                repositories.Add(type, repositoryInstance);
             }
 
-            return (IGenericRepository<T>)_repositories[type];
+            return (IGenericRepository<T>)repositories[type];
         }
 
         public async Task<int> Save()
         {
-            return await _dbContext.SaveChangesAsync();
+            return await dbContext.SaveChangesAsync();
         }
     }
 }

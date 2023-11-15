@@ -8,39 +8,39 @@ namespace BlazorWASMOnionMessenger.Client.Features.Auth
 {
     public class AuthService : IAuthService
     {
-        private readonly AuthenticationStateProvider _authStateProvider;
-        private readonly ILocalStorageService _localStorage;
-        private readonly IHttpClientService _httpClientService;
+        private readonly AuthenticationStateProvider authStateProvider;
+        private readonly ILocalStorageService localStorage;
+        private readonly IHttpClientService httpClientService;
 
         public AuthService(AuthenticationStateProvider authStateProvider, ILocalStorageService localStorage, IHttpClientService httpClientService)
         {
-            _authStateProvider = authStateProvider;
-            _localStorage = localStorage;
-            _httpClientService = httpClientService;
+            this.authStateProvider = authStateProvider;
+            this.localStorage = localStorage;
+            this.httpClientService = httpClientService;
         }
         public async Task<AuthDto> Login(LoginDto userLoginDto)
         {
-            var response = await _httpClientService.PostAsync<LoginDto, AuthDto>("auth/login", userLoginDto);
+            var response = await httpClientService.PostAsync<LoginDto, AuthDto>("auth/login", userLoginDto);
             if (!response.IsSuccessful) return response;
 
-            await _localStorage.SetItemAsync("authToken", response.Token);
-            ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(response.Token);
+            await localStorage.SetItemAsync("authToken", response.Token);
+            ((AuthStateProvider)authStateProvider).NotifyUserAuthentication(response.Token);
             return new AuthDto { IsSuccessful = true };
         }
 
         public async Task Logout()
         {
-            await _localStorage.RemoveItemAsync("authToken");
-            ((AuthStateProvider)_authStateProvider).NotifyUserLogout();
+            await localStorage.RemoveItemAsync("authToken");
+            ((AuthStateProvider)authStateProvider).NotifyUserLogout();
         }
 
         public async Task<AuthDto> Register(RegisterDto userRegisterDto)
         {
-            var response = await _httpClientService.PostAsync<RegisterDto, AuthDto>("auth/register", userRegisterDto);
+            var response = await httpClientService.PostAsync<RegisterDto, AuthDto>("auth/register", userRegisterDto);
             if (!response.IsSuccessful) return response;
 
-            await _localStorage.SetItemAsync("authToken", response.Token);
-            ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(response.Token);
+            await localStorage.SetItemAsync("authToken", response.Token);
+            ((AuthStateProvider)authStateProvider).NotifyUserAuthentication(response.Token);
             return new AuthDto { IsSuccessful = true };
         }
     }

@@ -6,7 +6,7 @@ namespace BlazorWASMOnionMessenger.Client.Pages.Auth
 {
     public partial class Login
     {
-        private LoginDto _userLoginDto = new LoginDto();
+        private LoginDto userLoginDto = new LoginDto();
         [Inject]
         public IAuthService AuthService { get; set; }
         [Inject]
@@ -16,7 +16,7 @@ namespace BlazorWASMOnionMessenger.Client.Pages.Auth
         public async Task HandleLogin()
         {
             ShowAuthError = false;
-            var result = await AuthService.Login(_userLoginDto);
+            var result = await AuthService.Login(userLoginDto);
             if (!result.IsSuccessful)
             {
                 Error = result.ErrorMessage;

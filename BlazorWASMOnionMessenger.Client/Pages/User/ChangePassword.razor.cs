@@ -7,7 +7,7 @@ namespace BlazorWASMOnionMessenger.Client.Pages.User
 {
     public partial class ChangePassword
     {
-        protected UserChangePasswordDto _userChangePasswordDto = new UserChangePasswordDto();
+        protected UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto();
         [Inject]
         private IUserService UserService { get; set; }
         [Inject]
@@ -23,7 +23,7 @@ namespace BlazorWASMOnionMessenger.Client.Pages.User
         };
         public async Task HandleChangePassword()
         {
-            var response = await UserService.ChangePassword(_userChangePasswordDto);
+            var response = await UserService.ChangePassword(userChangePasswordDto);
 
             if (response.IsSuccessful)
             {

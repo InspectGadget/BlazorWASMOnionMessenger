@@ -15,6 +15,5 @@ namespace BlazorWASMOnionMessenger.Application.Interfaces.Repositories
         void Add(T entity);
         void Delete(T entity);
         void DeleteRange(IEnumerable<T> entities);
-        void Update(T entity);
     }
 }

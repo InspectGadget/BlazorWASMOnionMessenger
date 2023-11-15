@@ -22,13 +22,13 @@ namespace BlazorWASMOnionMessenger.Client
 
         protected override async Task OnInitializedAsync()
         {
-            HandleSignalRConnection();
+            await HandleSignalRConnection();
             AuthenticationStateProvider.AuthenticationStateChanged += HandleAuthenticationStateChanged;
         }
 
-        private async void ShowNotification(MessageDto messageDto)
+        private void ShowNotification(MessageDto messageDto)
         {
-            var userId = authenticationState.User.FindFirst("nameid").Value;
+            var userId = authenticationState.User.FindFirst("nameid")?.Value;
 
             if (userId != null && messageDto.SenderId != userId)
             {
@@ -37,8 +37,8 @@ namespace BlazorWASMOnionMessenger.Client
             }
         }
 
-        private async void HandleAuthenticationStateChanged(Task<AuthenticationState> authenticationStateTask) => HandleSignalRConnection();
-        private async void HandleSignalRConnection()
+        private async void HandleAuthenticationStateChanged(Task<AuthenticationState> authenticationStateTask) => await HandleSignalRConnection();
+        private async Task HandleSignalRConnection()
         {
             authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 
@@ -46,7 +46,7 @@ namespace BlazorWASMOnionMessenger.Client
             if (string.IsNullOrEmpty(token)) return;
 
             signalRMessageService.CreateAsync(token);
-            signalRMessageService.SubscribeToMessageReceived(ShowNotification);
+            signalRMessageService.SubscribeToReceiveMessage(ShowNotification);
             await signalRMessageService.StartConnection();
         }
     }
