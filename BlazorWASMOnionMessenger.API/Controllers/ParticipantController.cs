@@ -1,4 +1,5 @@
 ﻿using BlazorWASMOnionMessenger.Application.Interfaces.Participant;
+using BlazorWASMOnionMessenger.Domain.Common;
 using BlazorWASMOnionMessenger.Domain.DTOs.Participant;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +8,7 @@ namespace BlazorWASMOnionMessenger.API.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/chat")]
+    [Route("api/participant")]
     public class ParticipantController : ControllerBase
     {
         private readonly IParticipantService participantService;
@@ -30,16 +31,22 @@ namespace BlazorWASMOnionMessenger.API.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> CreateParticipant(CreateParticipantDto createParticipantDto)
+        public async Task<ActionResult<ResponseDto>> CreateParticipant(CreateParticipantDto createParticipantDto)
         {
             try
             {
                 await participantService.AddParticipantToChat(createParticipantDto);
-                return Ok();
+                return Ok(new ResponseDto
+                {
+                    IsSuccessful = true
+                });
             }
             catch (Exception ex) 
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ResponseDto
+                {
+                    ErrorMessage = ex.Message
+                });
             }
         }
     }

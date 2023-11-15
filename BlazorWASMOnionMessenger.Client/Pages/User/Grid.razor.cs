@@ -1,16 +1,25 @@
-﻿using BlazorWASMOnionMessenger.Client.Features.Users;
+﻿using BlazorWASMOnionMessenger.Client.Features.Chats;
+using BlazorWASMOnionMessenger.Client.Features.Users;
 using BlazorWASMOnionMessenger.Client.Shared;
 using BlazorWASMOnionMessenger.Domain.DTOs.User;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Radzen;
 
 namespace BlazorWASMOnionMessenger.Client.Pages.User
 {
     public partial class Grid : BaseGrid<UserDto>
     {
+        [CascadingParameter]
+        private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
         [Inject]
         private IUserService UserService { get; set; } = null!;
         [Inject]
+        private IChatService ChatService { get; set; } = null!;
+        [Inject]
         private NavigationManager NavigationManager { get; set; } = null!;
+        private const int PrivateChatId = 1;
 
         protected override async Task OnInitializedAsync()
         {
@@ -38,6 +47,19 @@ namespace BlazorWASMOnionMessenger.Client.Pages.User
             }
             isLoading = false;
             StateHasChanged();
+        }
+        protected async Task OnRowClick(DataGridRowMouseEventArgs<UserDto> row)
+        {
+            var authState = await AuthenticationStateTask;
+            var user = authState.User;
+            var userId = user.FindFirst("nameid").Value;
+            var chatId = await ChatService.CreateChat(new Domain.DTOs.Chat.CreateChatDto
+            {
+                ChatTypeId = PrivateChatId,
+                CreatorId = userId,
+                ParticipantId = row.Data.Id
+            });
+            NavigationManager.NavigateTo($"/chat/{chatId}");
         }
     }
 }
