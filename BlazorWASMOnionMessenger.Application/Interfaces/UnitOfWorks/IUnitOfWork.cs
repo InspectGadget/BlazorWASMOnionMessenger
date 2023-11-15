@@ -6,6 +6,6 @@ namespace BlazorWASMOnionMessenger.Application.Interfaces.UnitOfWorks
     public interface IUnitOfWork
     {
         IGenericRepository<T> Repository<T>() where T : BaseEntity;
-        Task<int> Save();
+        Task<int> SaveAsync();
     }
 }

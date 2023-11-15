@@ -57,7 +57,7 @@ namespace BlazorWASMOnionMessenger.Client.Features.Messages
             }
         }
 
-        public async Task SendMessageToChat(NewMessageDto newMessageDto)
+        public async Task SendMessageToChat(CreateMessageDto newMessageDto)
         {
             await hubConnection.SendAsync("SendMessageToChat", newMessageDto);
         }

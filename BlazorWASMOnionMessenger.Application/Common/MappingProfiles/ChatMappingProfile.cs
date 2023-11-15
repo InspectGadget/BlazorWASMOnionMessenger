@@ -22,6 +22,7 @@ namespace BlazorWASMOnionMessenger.Application.Common.MappingProfiles
                     .OrderByDescending(msg => msg.CreatedAt)
                     .Select(msg => msg.ApplicationUser.UserName)
                     .FirstOrDefault()));
+            CreateMap<CreateChatDto, Chat>();
         }
     }
 }

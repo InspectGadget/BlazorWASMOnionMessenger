@@ -25,7 +25,7 @@ END
 
 IF NOT EXISTS (SELECT 1 FROM [dbo].[Chats])
 BEGIN
-    INSERT INTO [dbo].[Chats] ([Id], [TypeId], [CreatedAt], [Name])
+    INSERT INTO [dbo].[Chats] ([Id], [ChatTypeId], [CreatedAt], [Name])
     VALUES
         (1, 1, GETDATE(), 'Chat 1'),
         (2, 2, GETDATE(), 'Chat 2');

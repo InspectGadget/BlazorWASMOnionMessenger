@@ -19,7 +19,7 @@ namespace BlazorWASMOnionMessenger.Infrastructure.SignalR
             this.participantService = participantService;
         }
 
-        public async Task SendMessageToChat(NewMessageDto messageDto)
+        public async Task SendMessageToChat(CreateMessageDto messageDto)
         {
             var messageId = await messageService.CreateMessageAsync(messageDto);
             var message = await messageService.GetMessageAsync(messageId);

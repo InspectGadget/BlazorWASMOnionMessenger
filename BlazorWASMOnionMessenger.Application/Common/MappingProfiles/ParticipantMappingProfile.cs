@@ -9,8 +9,8 @@ namespace BlazorWASMOnionMessenger.Application.Common.MappingProfiles
         public ParticipantMappingProfile()
         {
             CreateMap<Participant, ParticipantDto>()
-                .ForMember(dest => dest.ChatName, opt => opt.MapFrom(src => src.Chat.Name))
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.ApplicationUser.UserName));
+            CreateMap<CreateParticipantDto, Participant>();
         }
     }
 }

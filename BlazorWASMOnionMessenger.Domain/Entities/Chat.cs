@@ -7,7 +7,7 @@ namespace BlazorWASMOnionMessenger.Domain.Entities
     {
         public string Name { get; set; } = String.Empty;
         [ForeignKey("ChatType")]
-        public int TypeId { get; set; }
+        public int ChatTypeId { get; set; }
         public ChatType ChatType { get; set; } = null!;
 
         public DateTime CreatedAt { get; set; }

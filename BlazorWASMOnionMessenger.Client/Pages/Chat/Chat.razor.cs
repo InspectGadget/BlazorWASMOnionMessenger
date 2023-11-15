@@ -26,7 +26,7 @@ namespace BlazorWASMOnionMessenger.Client.Pages.Chat
         [Parameter]
         public string ChatId { get; set; }
         protected List<MessageDto> Messages { get; set; } = new List<MessageDto>();
-        protected NewMessageDto NewMessage { get; set; } = new NewMessageDto();
+        protected CreateMessageDto NewMessage { get; set; } = new CreateMessageDto();
         protected string userId { get; set; }
         private int skip = 0;
         private int quantity = 30;

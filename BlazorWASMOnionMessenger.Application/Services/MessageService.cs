@@ -18,12 +18,12 @@ namespace BlazorWASMOnionMessenger.Application.Services
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
         }
-        public async Task<int> CreateMessageAsync(NewMessageDto newMessage)
+        public async Task<int> CreateMessageAsync(CreateMessageDto newMessage)
         {
             var message = mapper.Map<Message>(newMessage);
             message.CreatedAt = DateTime.Now;
             unitOfWork.Repository<Message>().Add(message);
-            await unitOfWork.Save();
+            await unitOfWork.SaveAsync();
             return message.Id;
         }
 
@@ -43,7 +43,7 @@ namespace BlazorWASMOnionMessenger.Application.Services
             if (unreadMessagesToDelete.Count > 0)
             {
                 unitOfWork.Repository<UnreadMessage>().DeleteRange(unreadMessagesToDelete);
-                await unitOfWork.Save();
+                await unitOfWork.SaveAsync();
             }
 
             return messages;
@@ -62,7 +62,7 @@ namespace BlazorWASMOnionMessenger.Application.Services
             if (message != null)
             {
                 unitOfWork.Repository<Message>().Delete(message);
-                await unitOfWork.Save();
+                await unitOfWork.SaveAsync();
             }
         }
 
@@ -71,7 +71,7 @@ namespace BlazorWASMOnionMessenger.Application.Services
             var message = await unitOfWork.Repository<Message>().GetByIdAsync(messageDto.Id);
             message.MessageText = messageDto.MessageText;
             message.AttachmentUrl = messageDto.AttachmentUrl;
-            await unitOfWork.Save();
+            await unitOfWork.SaveAsync();
         }
     }
 }

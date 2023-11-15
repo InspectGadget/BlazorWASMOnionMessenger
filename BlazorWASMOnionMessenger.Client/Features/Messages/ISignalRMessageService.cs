@@ -9,7 +9,7 @@ namespace BlazorWASMOnionMessenger.Client.Features.Messages
         event Action<MessageDto> OnDeleteMessage;
         void CreateAsync(string token);
         Task StartConnection();
-        Task SendMessageToChat(NewMessageDto newMessageDto);
+        Task SendMessageToChat(CreateMessageDto newMessageDto);
         Task UpdateMessageInChat(MessageDto messageDto);
         Task DeleteMessageFromChat(MessageDto messageDto);
         void SubscribeToReceiveMessage(Action<MessageDto> handler);

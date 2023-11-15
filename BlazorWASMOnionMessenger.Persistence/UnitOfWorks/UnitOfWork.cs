@@ -36,7 +36,7 @@ namespace BlazorWASMOnionMessenger.Persistence.UnitOfWorks
             return (IGenericRepository<T>)repositories[type];
         }
 
-        public async Task<int> Save()
+        public async Task<int> SaveAsync()
         {
             return await dbContext.SaveChangesAsync();
         }

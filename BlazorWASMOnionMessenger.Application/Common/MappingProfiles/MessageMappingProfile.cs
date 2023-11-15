@@ -12,7 +12,7 @@ namespace BlazorWASMOnionMessenger.Application.Common.MappingProfiles
                 .ForMember(dest => dest.SenderName, opt => opt.MapFrom(src => src.ApplicationUser.UserName))
                 .ForMember(dest => dest.ChatName, opt => opt.MapFrom(src => src.Chat.Name));
 
-            CreateMap<NewMessageDto, Message>()
+            CreateMap<CreateMessageDto, Message>()
                 .ForMember(dest => dest.SenderId, opt => opt.MapFrom(src => src.UserId));
         }
     }

@@ -6,6 +6,8 @@ namespace BlazorWASMOnionMessenger.Application.Interfaces.Chats
 {
     public interface IChatService
     {
-        Task<PagedEntities<ChatDto>> GetPage(int page, int pageSize, string orderBy, bool orderType, string search);
+        Task<PagedEntities<ChatDto>> GetChatsPage(int page, int pageSize, string orderBy, bool orderType, string search);
+        Task<int> CreateChat(CreateChatDto createChatDto);
+        Task<ChatDto> GetChatById(int chatId);
     }
 }

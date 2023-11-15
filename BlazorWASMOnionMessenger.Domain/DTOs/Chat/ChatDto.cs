@@ -1,6 +1,4 @@
-﻿using BlazorWASMOnionMessenger.Domain.Entities;
-
-namespace BlazorWASMOnionMessenger.Domain.DTOs.Chat
+﻿namespace BlazorWASMOnionMessenger.Domain.DTOs.Chat
 {
     public class ChatDto
     {
