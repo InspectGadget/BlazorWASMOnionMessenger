@@ -5,6 +5,12 @@
 @inherits BaseGrid<ChatDto>
 
 <h3>Chats</h3>
+<RadzenRow class="rz-pb-3">
+    <RadzenColumn>
+        <RadzenTextBox Placeholder="Name..." @bind-Value="CreateChatDto.Name" class="w-15" />
+        <RadzenButton Click="CreateGroup" Text="Create Group" ButtonStyle="ButtonStyle.Secondary" />
+    </RadzenColumn>
+</RadzenRow>
 <RadzenRow>
     <RadzenColumn Size="8">
         <RadzenTextBox Placeholder="Search..." @bind-Value="Search" class="w-15" />

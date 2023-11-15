@@ -2,18 +2,25 @@
 using BlazorWASMOnionMessenger.Client.Shared;
 using BlazorWASMOnionMessenger.Domain.DTOs.Chat;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Radzen;
 
 namespace BlazorWASMOnionMessenger.Client.Pages.Chat
 {
     public partial class List : BaseGrid<ChatDto>
     {
+        [CascadingParameter]
+        private Task<AuthenticationState> AuthenticationStateTask { get; set; }
         [Inject]
         private NavigationManager NavigationManager { get; set; }
         [Inject]
         private IChatService ChatService { get; set; }
 
         private const string Route = "/chats";
+
+        private const int GroupChatTypeId = 2;
+
+        protected CreateChatDto CreateChatDto { get; set; } = new CreateChatDto();
 
 
         protected override async Task OnInitializedAsync()
@@ -47,6 +54,17 @@ namespace BlazorWASMOnionMessenger.Client.Pages.Chat
             
             isLoading = false;
             StateHasChanged();
+        }
+
+        protected async Task CreateGroup()
+        {
+            var authState = await AuthenticationStateTask;
+            var user = authState.User;
+            var userId = user.FindFirst("nameid").Value;
+            CreateChatDto.CreatorId = userId;
+            CreateChatDto.ChatTypeId = GroupChatTypeId;
+            var chatId = await ChatService.CreateChat(CreateChatDto);
+            NavigationManager.NavigateTo($"/chat/{chatId}");
         }
     }
 }

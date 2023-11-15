@@ -4,5 +4,5 @@
     [ChatTypeId] INT NOT NULL, 
     [CreatedAt] DATETIME NOT NULL, 
     [Name] VARCHAR(50) NULL, 
-    CONSTRAINT [FK_Chats_ChatTypes] FOREIGN KEY ([ChatTypeId]) REFERENCES [ChatTypes]([Id])
+    CONSTRAINT [FK_Chats_ChatTypes] FOREIGN KEY ([ChatTypeId]) REFERENCES [ChatTypes]([Id]) ON DELETE CASCADE
 )

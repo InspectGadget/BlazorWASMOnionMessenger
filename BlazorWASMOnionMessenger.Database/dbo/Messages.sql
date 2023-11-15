@@ -6,6 +6,6 @@
     [MessageText] NVARCHAR(MAX) NULL, 
     [CreatedAt] DATETIME NOT NULL, 
     [AttachmentUrl] VARCHAR(MAX) NULL, 
-    CONSTRAINT [FK_Messages_AspNetUsers] FOREIGN KEY ([SenderId]) REFERENCES [AspNetUsers]([Id]), 
-    CONSTRAINT [FK_Messages_Chats] FOREIGN KEY ([ChatId]) REFERENCES [Chats]([Id])
+    CONSTRAINT [FK_Messages_AspNetUsers] FOREIGN KEY ([SenderId]) REFERENCES [AspNetUsers]([Id]) ON DELETE CASCADE, 
+    CONSTRAINT [FK_Messages_Chats] FOREIGN KEY ([ChatId]) REFERENCES [Chats]([Id]) ON DELETE CASCADE
 )
