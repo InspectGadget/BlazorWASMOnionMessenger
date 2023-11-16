@@ -17,12 +17,12 @@ namespace BlazorWASMOnionMessenger.API.Controllers
         {
             this.participantService = participantService;
         }
-        [HttpGet]
+        [HttpGet("{chatId}")]
         public async Task<ActionResult<IEnumerable<ParticipantDto>>> GetByChatId(int chatId)
         {
             try
             {
-                var result = participantService.GetByChatIdAsync(chatId);
+                var result = await participantService.GetByChatIdAsync(chatId);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -41,7 +41,7 @@ namespace BlazorWASMOnionMessenger.API.Controllers
                     IsSuccessful = true
                 });
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return BadRequest(new ResponseDto
                 {

@@ -1,6 +1,12 @@
-﻿using BlazorWASMOnionMessenger.Client.Features.Common;
+﻿using BlazorWASMOnionMessenger.Client.Features.Chats;
+using BlazorWASMOnionMessenger.Client.Features.Common;
 using BlazorWASMOnionMessenger.Client.Features.Messages;
+using BlazorWASMOnionMessenger.Client.Features.Participants;
+using BlazorWASMOnionMessenger.Client.Features.Users;
+using BlazorWASMOnionMessenger.Domain.DTOs.Chat;
 using BlazorWASMOnionMessenger.Domain.DTOs.Message;
+using BlazorWASMOnionMessenger.Domain.DTOs.Participant;
+using BlazorWASMOnionMessenger.Domain.DTOs.User;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
@@ -17,11 +23,17 @@ namespace BlazorWASMOnionMessenger.Client.Pages.Chat
         [Inject]
         protected ContextMenuService ContextMenuService { get; set; }
         [Inject]
-        private ISignalRMessageService signalRMessageService { get; set; }
+        private ISignalRMessageService SignalRMessageService { get; set; }
         [Inject]
-        private IMessageService messageService { get; set; }
+        private IMessageService MessageService { get; set; }
+        [Inject]
+        private IChatService ChatService { get; set; }
         [Inject]
         protected IJSRuntime JSRuntime { get; set; }
+        [Inject]
+        private IParticipantService ParticipantService { get; set; }
+        [Inject]
+        private IUserService UserService { get; set; }
 
         [Parameter]
         public string ChatId { get; set; }
@@ -35,16 +47,39 @@ namespace BlazorWASMOnionMessenger.Client.Pages.Chat
         protected ElementReference messagesContainerRef;
         protected bool isUpdating = false;
         protected MessageDto messageToUpdate = new MessageDto();
+        protected string Search { get; set; } = string.Empty;
+        protected List<UserDto> Users { get; set; } = new List<UserDto>();
+        protected List<ParticipantDto> Participants { get; set; } = new List<ParticipantDto>();
+        protected ChatDto ChatDto { get; set; } = new ChatDto();
+
 
         protected override async Task OnInitializedAsync()
         {
-            signalRMessageService.SubscribeToReceiveMessage(HendleReceiveMessage);
-            signalRMessageService.SubscribeToUpdateMessage(HandleUpdateMessage);
-            signalRMessageService.SubscribeToDeleteMessage(HandleDeleteMessage);
+            SignalRMessageService.SubscribeToReceiveMessage(HendleReceiveMessage);
+            SignalRMessageService.SubscribeToUpdateMessage(HandleUpdateMessage);
+            SignalRMessageService.SubscribeToDeleteMessage(HandleDeleteMessage);
             var authState = await AuthenticationStateTask;
             var user = authState.User;
             userId = user.FindFirst("nameid").Value;
-            Messages = (await messageService.Get(userId, int.Parse(ChatId), quantity, skip)).ToList();
+            ChatDto = await ChatService.GetChat(int.Parse(ChatId));
+            Messages = (await MessageService.Get(userId, int.Parse(ChatId), quantity, skip)).ToList();
+            Participants = (await ParticipantService.GetParticipants(int.Parse(ChatId))).ToList();
+            await LoadUsers();
+        }
+
+        protected async Task AddParticipant(UserDto userDto)
+        {
+            await ParticipantService.CreateParticipant(new Domain.DTOs.Participant.CreateParticipantDto
+            {
+                ChatId = int.Parse(ChatId),
+                UserId = userDto.Id
+            });
+        }
+
+        protected async Task LoadUsers()
+        {
+            var result = await UserService.GetPage(1, 40, "", false, Search);
+            Users = result.Entities;
         }
 
         private void HendleReceiveMessage(MessageDto message)
@@ -57,14 +92,14 @@ namespace BlazorWASMOnionMessenger.Client.Pages.Chat
             NewMessage.ChatId = int.Parse(ChatId); 
             NewMessage.UserId = userId;
             NewMessage.AttachmentUrl = "tmp";
-            await signalRMessageService.SendMessageToChat(NewMessage);
+            await SignalRMessageService.SendMessageToChat(NewMessage);
             NewMessage.MessageText = "";
             StateHasChanged();
         }
         protected async Task UpdateMessage()
         {
             messageToUpdate.MessageText = NewMessage.MessageText;
-            await signalRMessageService.UpdateMessageInChat(messageToUpdate);
+            await SignalRMessageService.UpdateMessageInChat(messageToUpdate);
             NewMessage.MessageText = "";
             isUpdating = false;
             StateHasChanged();
@@ -84,7 +119,7 @@ namespace BlazorWASMOnionMessenger.Client.Pages.Chat
         }
         protected async Task DeleteMessage(int messageId)
         {
-            await signalRMessageService.DeleteMessageFromChat(Messages.First(m => m.Id == messageId));
+            await SignalRMessageService.DeleteMessageFromChat(Messages.First(m => m.Id == messageId));
         }
         private void HandleDeleteMessage(MessageDto messageDto)
         {
@@ -124,7 +159,7 @@ namespace BlazorWASMOnionMessenger.Client.Pages.Chat
 
         public void Dispose()
         {
-            signalRMessageService.UnsubscribeFromUpdateMessage(HendleReceiveMessage);
+            SignalRMessageService.UnsubscribeFromUpdateMessage(HendleReceiveMessage);
         }
     }
 }

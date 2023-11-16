@@ -1,5 +1,8 @@
 ﻿
 @page "/chat/{chatId}"
+@using BlazorWASMOnionMessenger.Domain.DTOs.Participant;
+
+<h3>@ChatDto.Name</h3>
 
 <RadzenRow>
     <RadzenColumn Size="8">
@@ -33,13 +36,36 @@
         </div>
     </RadzenColumn>
     <RadzenColumn Size="4">
+        <RadzenRow>
+            <h3>Participants</h3>
 
+            <RadzenListBox TValue="ParticipantDto" Data="Participants" TextProperty="UserName" Style="width:100%" class="rz-mb-5" />
+        </RadzenRow>
+        @if(ChatDto.ChatType == "Group")
+        {
+            <h3>Add users</h3>
+
+            <RadzenRow>
+                <RadzenTextBox Placeholder="Search..." @bind-Value="Search" class="w-15" />
+                <RadzenButton Click="LoadUsers" Text="Search" ButtonStyle="ButtonStyle.Secondary" />
+                <div class="rz-p-sm-2 rz-text-align-center" style="width:100%">
+                    <div class="user-list-container">
+                        @foreach (var user in Users)
+                        {
+                            <div class="user-item" @onclick="() => AddParticipant(user)">
+                                <p>@user.UserName</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </RadzenRow>     
+        }
     </RadzenColumn>
 </RadzenRow>
 
 <style>
     .messages {
-        max-height: 80vh;
+        height: 80vh;
         overflow-y: scroll;
     }
 
@@ -76,5 +102,18 @@
 
     .message-box {
         width: 90%;
+    }
+
+    .user-list-container {
+        max-height: 300px; /* Set the maximum height for the container */
+        overflow-y: auto; /* Add a vertical scrollbar if the content overflows */
+    }
+
+    .user-item {
+        /* Style individual user items as needed */
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
     }
 </style>
