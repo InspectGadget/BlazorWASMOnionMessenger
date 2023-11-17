@@ -17,9 +17,9 @@ namespace BlazorWASMOnionMessenger.Client.Features.Participants
             await httpClientService.PostAsync<CreateParticipantDto, ResponseDto>("participant", createParticipantDto);
         }
 
-        public async Task<IEnumerable<ParticipantDto>> GetParticipants(int chatId)
+        public async Task<IEnumerable<ParticipantDto>> GetParticipants()
         {
-            return await httpClientService.GetAsync<IEnumerable<ParticipantDto>>($"participant/{chatId}");
+            return await httpClientService.GetAsync<IEnumerable<ParticipantDto>>("participant");
         }
     }
 }

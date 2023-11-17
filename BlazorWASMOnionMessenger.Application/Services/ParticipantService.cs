@@ -22,6 +22,7 @@ namespace BlazorWASMOnionMessenger.Application.Services
         public async Task AddParticipantToChat(CreateParticipantDto createParticipantDto)
         {
             var newParticipant = mapper.Map<Participant>(createParticipantDto);
+            newParticipant.JoinedAt = DateTime.Now;
             unitOfWork.Repository<Participant>().Add(newParticipant);
             await unitOfWork.SaveAsync();
         }

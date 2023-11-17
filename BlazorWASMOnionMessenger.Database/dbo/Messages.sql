@@ -4,7 +4,7 @@
     [ChatId] INT NOT NULL, 
     [SenderId] [nvarchar](450) NOT NULL, 
     [MessageText] NVARCHAR(MAX) NULL, 
-    [CreatedAt] DATETIME2 DEFAULT GETDATE(), 
+    [CreatedAt] DATETIME NOT NULL, 
     [AttachmentUrl] VARCHAR(MAX) NULL, 
     CONSTRAINT [FK_Messages_AspNetUsers] FOREIGN KEY ([SenderId]) REFERENCES [AspNetUsers]([Id]) ON DELETE CASCADE, 
     CONSTRAINT [FK_Messages_Chats] FOREIGN KEY ([ChatId]) REFERENCES [Chats]([Id]) ON DELETE CASCADE

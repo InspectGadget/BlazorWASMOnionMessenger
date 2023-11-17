@@ -44,6 +44,7 @@ namespace BlazorWASMOnionMessenger.Application.Services
             }
 
             var newChat = mapper.Map<Chat>(createChatDto);
+            newChat.CreatedAt = DateTime.Now;
             unitOfWork.Repository<Chat>().Add(newChat);
             await unitOfWork.SaveAsync();
 
@@ -54,7 +55,7 @@ namespace BlazorWASMOnionMessenger.Application.Services
                 RoleId = AdminUserId
             });
 
-            if (createChatDto.ChatTypeId == PrivateChatTypeId)
+            if(createChatDto.ChatTypeId == PrivateChatTypeId)
             {
                 await participantService.AddParticipantToChat(new Domain.DTOs.Participant.CreateParticipantDto
                 {
@@ -69,7 +70,7 @@ namespace BlazorWASMOnionMessenger.Application.Services
 
         public async Task<ChatDto> GetChatById(int chatId)
         {
-            return await unitOfWork.Repository<Chat>().GetQueryable(c => c.Id == chatId).ProjectTo<ChatDto>(mapper.ConfigurationProvider).FirstAsync();
+            return mapper.Map<ChatDto>(await unitOfWork.Repository<Chat>().GetByIdAsync(chatId));
         }
 
         public async Task<PagedEntities<ChatDto>> GetChatsPage(int page, int pageSize, string orderBy, bool orderType, string search)
