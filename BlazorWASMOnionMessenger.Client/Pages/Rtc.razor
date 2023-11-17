@@ -1,0 +1,18 @@
+﻿@page "/rtc"
+
+<PageTitle>WebRtc</PageTitle>
+
+<div class="py-4">
+    <label for="channelInput">Channel</label>
+    <input id="channelInput" @bind="chatId"/>
+    <button id="startButton" @onclick="StartAction" disabled="@startDisabled">Start</button>
+    <button id="callButton" @onclick="CallAction" disabled="@callDisabled">Call</button>
+    <button id="hangupButton" @onclick="HangupAction" disabled="@hangupDisabled">Hang Up</button>
+</div>
+
+<div class="container">
+    <div class="row">
+        <video class="col col-lg-6 p-0" id="localVideo" autoplay playsinline></video>
+        <video class="col col-lg-6 p-0" id="remoteVideo" autoplay playsinline></video>
+    </div>
+</div>

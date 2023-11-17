@@ -8,6 +8,7 @@ using BlazorWASMOnionMessenger.Client.Features.Messages;
 using BlazorWASMOnionMessenger.Client.Features.Participants;
 using BlazorWASMOnionMessenger.Client.Features.Users;
 using BlazorWASMOnionMessenger.Client.HttpServices;
+using BlazorWASMOnionMessenger.Client.WebRtc;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -28,6 +29,7 @@ builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IParticipantService, ParticipantService>();
 builder.Services.AddScoped<IHttpClientService, HttpClientService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
+//builder.Services.AddScoped<IWebRtcService, WebRtcService>();
 builder.Services.AddSingleton<JwtTokenParser>();
 builder.Services.AddScoped<ISignalRMessageService, SignalRMessageService>( provider =>
 {
