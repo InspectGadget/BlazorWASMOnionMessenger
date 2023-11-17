@@ -66,13 +66,13 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IParticipantService, ParticipantService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ISearchPredicateBuilder, SearchPredicateBuilder>();
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
-builder.Services.AddScoped<IParticipantService, ParticipantService>();
 
 builder.Services.AddAutoMapper(typeof(UserMappingProfile));
 
@@ -98,6 +98,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapHub<MessageHub>("/hubs/message");
+//app.MapHub<MessageHub>("/hubs/message");
 
 app.Run();
