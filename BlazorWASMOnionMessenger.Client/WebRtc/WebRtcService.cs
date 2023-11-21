@@ -1,34 +1,61 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.SignalR.Client;
+﻿using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
+using Radzen;
 
 namespace BlazorWASMOnionMessenger.Client.WebRtc
 {
     public class WebRtcService : IWebRtcService
     {
-        private readonly NavigationManager navigationMenager;
+        private readonly DialogService dialogService;
         private readonly IJSRuntime js;
         private IJSObjectReference? jsModule;
-        private DotNetObjectReference<WebRtcService>? jsThis;
-        private HubConnection? hub;
+        private HubConnection hubConnection;
+        private readonly string hubUrl;
         private int? chatId;
-        public event EventHandler<IJSObjectReference>? OnRemoteStreamAcquired;
+        private event EventHandler<IJSObjectReference>? OnRemoteStreamAcquired;
+        private event Action<int, string, string> OnSignalWebRtc;
 
-        public WebRtcService(IJSRuntime js, NavigationManager nav)
+
+        public WebRtcService(IJSRuntime js, DialogService dialogService, string hubUrl)
         {
             this.js = js;
-            navigationMenager = nav;
+            this.dialogService = dialogService;
+            this.hubUrl = hubUrl;
         }
-
-        public async Task Join(int chatId)
+        public void CreateAsync(string token)
         {
-            if (this.chatId != null) throw new InvalidOperationException();
+            hubConnection = new HubConnectionBuilder()
+            .WithUrl(hubUrl, options =>
+            {
+                options.AccessTokenProvider = () => Task.FromResult(token);
+            })
+            .WithAutomaticReconnect()
+            .Build();
+
+            hubConnection.On<int, string, string>("SignalWebRtc", (chatId, type, payload) =>
+            {
+                OnSignalWebRtc?.Invoke(chatId, type, payload);
+            });
+        }
+        public async Task StartConnection()
+        {
+            try
+            {
+                await hubConnection.StartAsync();
+                Console.WriteLine("SignalR connected.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while connecting to SignalR hub: {ex.Message}");
+            }
+        }
+        public async Task Initialize(int chatId)
+        {
             this.chatId = chatId;
-            var hub = await GetHub();
-            await hub.SendAsync("join", chatId);
+            SubscribeToSignalWebRtc(HandleSignalWebRtc);
             jsModule = await js.InvokeAsync<IJSObjectReference>(
                 "import", "/js/WebRtcService.cs.js");
-            jsThis = DotNetObjectReference.Create(this);
+            var jsThis = DotNetObjectReference.Create(this);
             await jsModule.InvokeVoidAsync("initialize", jsThis);
         }
         public async Task<IJSObjectReference> StartLocalStream()
@@ -44,69 +71,60 @@ namespace BlazorWASMOnionMessenger.Client.WebRtc
             await SendOffer(offerDescription);
         }
 
+        [JSInvokable]
         public async Task Hangup()
         {
             if (jsModule == null) throw new InvalidOperationException();
             await jsModule.InvokeVoidAsync("hangupAction");
-
-            var hub = await GetHub();
-            await hub.SendAsync("leave", chatId);
+            UnsubscribeFromSignalWebRtc(HandleSignalWebRtc);
+            dialogService.Close();
 
             chatId = null;
         }
-
-        private async Task<HubConnection> GetHub()
+        public void SubscribeToSignalWebRtc(Action<int, string, string> handler)
         {
+            OnSignalWebRtc += handler;
+        }
 
-            if (this.hub != null) return this.hub;
+        public void UnsubscribeFromSignalWebRtc(Action<int, string, string> handler)
+        {
+            OnSignalWebRtc -= handler;
+        }
+        private async void HandleSignalWebRtc(int chatId, string type, string payload)
+        {
+            if (jsModule == null) throw new InvalidOperationException();
 
-            var hub = new HubConnectionBuilder()
-                .WithUrl(navigationMenager.ToAbsoluteUri("/messagehub"))
-                .Build();
-
-            hub.On<int, string, string>("SignalWebRtc", async (chatId, type, payload) =>
+            if (this.chatId != chatId) return;
+            switch (type)
             {
-                if (jsModule == null) throw new InvalidOperationException();
-
-                if (this.chatId != chatId) return;
-                switch (type)
-                {
-                    case "offer":
-                        await jsModule.InvokeVoidAsync("processOffer", payload);
-                        break;
-                    case "answer":
-                        await jsModule.InvokeVoidAsync("processAnswer", payload);
-                        break;
-                    case "candidate":
-                        await jsModule.InvokeVoidAsync("processCandidate", payload);
-                        break;
-                }
-            });
-
-            await hub.StartAsync();
-            this.hub = hub;
-            return this.hub;
+                case "offer":
+                    await jsModule.InvokeVoidAsync("processOffer", payload);
+                    break;
+                case "answer":
+                    await jsModule.InvokeVoidAsync("processAnswer", payload);
+                    break;
+                case "candidate":
+                    await jsModule.InvokeVoidAsync("processCandidate", payload);
+                    break;
+            }
         }
 
         [JSInvokable]
         public async Task SendOffer(string offer)
         {
-            var hub = await GetHub();
-            await hub.SendAsync("SignalWebRtc", chatId, "offer", offer);
+            await hubConnection.SendAsync("SignalWebRtc", chatId, "offer", offer);
         }
 
         [JSInvokable]
         public async Task SendAnswer(string answer)
         {
-            var hub = await GetHub();
-            await hub.SendAsync("SignalWebRtc", chatId, "answer", answer);
+            await hubConnection.SendAsync("SignalWebRtc", chatId, "answer", answer);
         }
 
         [JSInvokable]
         public async Task SendCandidate(string candidate)
         {
-            var hub = await GetHub();
-            await hub.SendAsync("SignalWebRtc", chatId, "candidate", candidate);
+            await hubConnection.SendAsync("SignalWebRtc", chatId, "candidate", candidate);
         }
 
         [JSInvokable]
@@ -115,6 +133,11 @@ namespace BlazorWASMOnionMessenger.Client.WebRtc
             if (jsModule == null) throw new InvalidOperationException();
             var stream = await jsModule.InvokeAsync<IJSObjectReference>("getRemoteStream");
             OnRemoteStreamAcquired?.Invoke(this, stream);
+        }
+
+        public void SubscribeToOnRemoteStreamAcquired(EventHandler<IJSObjectReference> handler)
+        {
+            OnRemoteStreamAcquired += handler;
         }
     }
 }

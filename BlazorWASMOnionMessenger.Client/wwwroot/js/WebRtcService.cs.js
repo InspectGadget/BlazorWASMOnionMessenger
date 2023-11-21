@@ -1,12 +1,12 @@
 ﻿"use strict";
 const mediaStreamConstraints = {
-    video: true,
-    audio: true
+    video: true
+    //audio: true
 };
 
 const offerOptions = {
-    offerToReceiveVideo: 1,
-    offerToReceiveAudio: 1
+    offerToReceiveVideo: 1
+    //offerToReceiveAudio: 1
 };
 
 const servers = {
@@ -24,7 +24,6 @@ let localStream;
 let remoteStream;
 let peerConnection;
 
-let isOffering;
 let isOffered;
 
 export function initialize(dotNetRef) {
@@ -34,6 +33,14 @@ export async function startLocalStream() {
     console.log("Requesting local stream.");
     localStream = await navigator.mediaDevices.getUserMedia(mediaStreamConstraints);
     return localStream;
+}
+function stopLocalStream() {
+    if (localStream) {
+        const tracks = localStream.getTracks();
+        tracks.forEach(track => track.stop());
+        localStream = null;
+        console.log("Local stream stopped.");
+    }
 }
 
 function createPeerConnection() {
@@ -58,7 +65,6 @@ function createPeerConnection() {
 export async function callAction() {
     if (isOffered) return Promise.resolve();
 
-    isOffering = true;
     console.log("Starting call.");
     createPeerConnection();
 
@@ -85,7 +91,6 @@ export async function processAnswer(descriptionText) {
 // in the flow above. srd triggers addStream.
 export async function processOffer(descriptionText) {
     console.log("processOffer");
-    if (isOffering) return;
 
     createPeerConnection();
     let description = JSON.parse(descriptionText);
@@ -113,6 +118,7 @@ export async function processCandidate(candidateText) {
 export function hangupAction() {
     peerConnection.close();
     peerConnection = null;
+    stopLocalStream();
     console.log("Ending call.");
 }
 
@@ -140,8 +146,15 @@ async function handleConnection(event) {
 }
 
 // Logs changes to the connection state.
-function handleConnectionChange(event) {
+async function handleConnectionChange(event) {
     const peerConnection = event.target;
     console.log("ICE state change event: ", event);
     console.log(`peerConnection ICE state: ${peerConnection.iceConnectionState}.`);
+    switch (peerConnection.iceConnectionState) {
+        case "disconnected":
+        case "closed":
+        case "failed":
+            await dotNet.invokeMethodAsync("Hangup");
+            break;
+    }
 }

@@ -3,6 +3,7 @@ using BlazorWASMOnionMessenger.Client.Features.Common;
 using BlazorWASMOnionMessenger.Client.Features.Messages;
 using BlazorWASMOnionMessenger.Client.Features.Participants;
 using BlazorWASMOnionMessenger.Client.Features.Users;
+using BlazorWASMOnionMessenger.Client.WebRtc;
 using BlazorWASMOnionMessenger.Domain.DTOs.Chat;
 using BlazorWASMOnionMessenger.Domain.DTOs.Message;
 using BlazorWASMOnionMessenger.Domain.DTOs.Participant;
@@ -34,19 +35,22 @@ namespace BlazorWASMOnionMessenger.Client.Pages.Chat
         private IParticipantService ParticipantService { get; set; }
         [Inject]
         private IUserService UserService { get; set; }
+        [Inject]
+        protected DialogService DialogService { get; set; }
+
 
         [Parameter]
-        public string ChatId { get; set; }
+        public string ChatId { get; set; } = string.Empty;
         protected List<MessageDto> Messages { get; set; } = new List<MessageDto>();
         protected CreateMessageDto NewMessage { get; set; } = new CreateMessageDto();
-        protected string userId { get; set; }
-        private int skip = 0;
-        private int quantity = 30;
+        protected string userId { get; set; } = string.Empty;
+        private const int skip = 0;
+        private const int quantity = 30;
         protected string MessageContainerClass(string senderId) =>
         senderId == userId ? "float-right" : "";
         protected ElementReference messagesContainerRef;
         protected bool isUpdating = false;
-        protected MessageDto messageToUpdate = new MessageDto();
+        protected MessageDto messageToUpdate = new();
         protected string Search { get; set; } = string.Empty;
         protected List<UserDto> Users { get; set; } = new List<UserDto>();
         protected List<ParticipantDto> Participants { get; set; } = new List<ParticipantDto>();
@@ -151,6 +155,12 @@ namespace BlazorWASMOnionMessenger.Client.Pages.Chat
                     break;
             }
             ContextMenuService.Close();
+        }
+        protected void HandleCall()
+        {
+            DialogService.OpenAsync<VideoCallDialog>("Video call",
+                new Dictionary<string, object>() { { "ChatId", int.Parse(ChatId) } },
+                new DialogOptions() { Width = "1320px", CloseDialogOnEsc = false, ShowClose = false, CloseDialogOnOverlayClick = false });
         }
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {

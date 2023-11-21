@@ -43,7 +43,5 @@ namespace BlazorWASMOnionMessenger.Infrastructure.SignalR
             var participantIds = participant.Select(participant => participant.UserId);
             await Clients.Users(participantIds).UpdateMessage(messageDto);
         }
-
-        
     }
 }

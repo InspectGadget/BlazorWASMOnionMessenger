@@ -8,9 +8,9 @@ namespace BlazorWASMOnionMessenger.Client.Features.Messages
         private readonly string hubUrl;
         private HubConnection hubConnection;
 
-        public event Action<MessageDto> OnReceiveMessage;
-        public event Action<MessageDto> OnUpdateMessage;
-        public event Action<MessageDto> OnDeleteMessage;
+        private event Action<MessageDto> OnReceiveMessage;
+        private event Action<MessageDto> OnUpdateMessage;
+        private event Action<MessageDto> OnDeleteMessage;
 
         public SignalRMessageService(string hubUrl)
         {

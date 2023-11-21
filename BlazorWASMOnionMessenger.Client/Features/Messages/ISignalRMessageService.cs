@@ -1,12 +1,10 @@
 ﻿using BlazorWASMOnionMessenger.Domain.DTOs.Message;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace BlazorWASMOnionMessenger.Client.Features.Messages
 {
     public interface ISignalRMessageService
     {
-        event Action<MessageDto> OnReceiveMessage;
-        event Action<MessageDto> OnUpdateMessage;
-        event Action<MessageDto> OnDeleteMessage;
         void CreateAsync(string token);
         Task StartConnection();
         Task SendMessageToChat(CreateMessageDto newMessageDto);

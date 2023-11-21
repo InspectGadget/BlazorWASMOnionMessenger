@@ -12,6 +12,7 @@ using BlazorWASMOnionMessenger.Client.WebRtc;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.JSInterop;
 using Radzen;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -29,14 +30,21 @@ builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IParticipantService, ParticipantService>();
 builder.Services.AddScoped<IHttpClientService, HttpClientService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
-//builder.Services.AddScoped<IWebRtcService, WebRtcService>();
 builder.Services.AddSingleton<JwtTokenParser>();
+builder.Services.AddScoped<IWebRtcService, WebRtcService>( provider =>
+{
+    var jsRuntime = provider.GetRequiredService<IJSRuntime>();
+    var dialogService = provider.GetRequiredService<DialogService>();
+    var webRtcHubUrl = builder.Configuration["webRtcHubUrl"];
+    return new WebRtcService(jsRuntime, dialogService, webRtcHubUrl);
+});
 builder.Services.AddScoped<ISignalRMessageService, SignalRMessageService>( provider =>
 {
-    var hubUrl = builder.Configuration["hubUrl"];
+    var hubUrl = builder.Configuration["messageHubUrl"];
     return new SignalRMessageService(hubUrl);
 });
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<ContextMenuService>();
+builder.Services.AddScoped<DialogService>();
 
 await builder.Build().RunAsync();
