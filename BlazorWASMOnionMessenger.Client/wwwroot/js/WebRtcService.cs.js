@@ -24,7 +24,6 @@ let localStream;
 let remoteStream;
 let peerConnection;
 
-let isOffering;
 let isOffered;
 
 export function initialize(dotNetRef) {
@@ -66,7 +65,6 @@ function createPeerConnection() {
 export async function callAction() {
     if (isOffered) return Promise.resolve();
 
-    isOffering = true;
     console.log("Starting call.");
     createPeerConnection();
 
@@ -93,7 +91,6 @@ export async function processAnswer(descriptionText) {
 // in the flow above. srd triggers addStream.
 export async function processOffer(descriptionText) {
     console.log("processOffer");
-    /*if (isOffering) return;*/
 
     createPeerConnection();
     let description = JSON.parse(descriptionText);

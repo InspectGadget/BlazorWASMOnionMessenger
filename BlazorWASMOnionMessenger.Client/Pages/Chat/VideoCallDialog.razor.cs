@@ -13,17 +13,6 @@ namespace BlazorWASMOnionMessenger.Client.Pages.Chat
         private IJSObjectReference? module;
         [Parameter] public int ChatId { get; set; }
 
-        private async void RtcOnOnRemoteStreamAcquired(object? _, IJSObjectReference e)
-        {
-            if (module == null) throw new InvalidOperationException();
-            await module.InvokeVoidAsync("setRemoteStream", e);
-            StateHasChanged();
-        }
-
-        private async Task HangupAction()
-        {
-            await RtcService.Hangup();
-        }
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
@@ -40,10 +29,21 @@ namespace BlazorWASMOnionMessenger.Client.Pages.Chat
                 }
                 var stream = await RtcService.StartLocalStream();
                 await module.InvokeVoidAsync("setLocalStream", stream);
-                RtcService.OnRemoteStreamAcquired += RtcOnOnRemoteStreamAcquired;
+                RtcService.SubscribeToOnRemoteStreamAcquired(RtcOnOnRemoteStreamAcquired);
                 await RtcService.Call();
             }
+        }
 
+        private async void RtcOnOnRemoteStreamAcquired(object? _, IJSObjectReference e)
+        {
+            if (module == null) throw new InvalidOperationException();
+            await module.InvokeVoidAsync("setRemoteStream", e);
+            StateHasChanged();
+        }
+
+        private async Task HangupAction()
+        {
+            await RtcService.Hangup();
         }
     }
 }

@@ -4,11 +4,14 @@ namespace BlazorWASMOnionMessenger.Client.WebRtc
 {
     public interface IWebRtcService
     {
-        event EventHandler<IJSObjectReference>? OnRemoteStreamAcquired;
-
+        void CreateAsync(string token);
+        Task StartConnection();
         Task Initialize(int chatId);
         Task<IJSObjectReference> StartLocalStream();
         Task Call();
         Task Hangup();
+        void SubscribeToSignalWebRtc(Action<int, string, string> handler);
+        void UnsubscribeFromSignalWebRtc(Action<int, string, string> handler);
+        void SubscribeToOnRemoteStreamAcquired(EventHandler<IJSObjectReference> handler);
     }
 }

@@ -4,7 +4,6 @@ using BlazorWASMOnionMessenger.Application.Interfaces.SignalR;
 using BlazorWASMOnionMessenger.Domain.DTOs.Message;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using System.Security.Claims;
 
 namespace BlazorWASMOnionMessenger.Infrastructure.SignalR
 {
@@ -43,20 +42,6 @@ namespace BlazorWASMOnionMessenger.Infrastructure.SignalR
             var participant = await participantService.GetByChatIdAsync(messageDto.ChatId);
             var participantIds = participant.Select(participant => participant.UserId);
             await Clients.Users(participantIds).UpdateMessage(messageDto);
-        }
-
-        public async Task SignalWebRtc(int chatId, string type, string payload)
-        {
-            var currentUser = Context.User;
-            var userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var participant = await participantService.GetByChatIdAsync(chatId);
-
-            var participantIds = participant
-                .Where(part => part.UserId != userId)
-                .Select(part => part.UserId)
-                .ToList();
-
-            await Clients.Users(participantIds).SignalWebRtc(chatId, type, payload);
         }
     }
 }

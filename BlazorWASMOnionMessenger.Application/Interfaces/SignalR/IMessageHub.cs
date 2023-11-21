@@ -7,6 +7,5 @@ namespace BlazorWASMOnionMessenger.Application.Interfaces.SignalR
         Task SendMessageToChat(CreateMessageDto messageDto);
         Task DeleteMessageFromChat(MessageDto messageDto);
         Task UpdateMessageInChat(MessageDto messageDto);
-        Task SignalWebRtc(int chatId, string type, string payload);
     }
 }

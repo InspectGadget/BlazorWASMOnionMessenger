@@ -8,11 +8,9 @@ namespace BlazorWASMOnionMessenger.Client.Features.Messages
         private readonly string hubUrl;
         private HubConnection hubConnection;
 
-        public event Action<MessageDto> OnReceiveMessage;
-        public event Action<MessageDto> OnUpdateMessage;
-        public event Action<MessageDto> OnDeleteMessage;
-
-        public event Action<int, string, string> OnSignalWebRtc;
+        private event Action<MessageDto> OnReceiveMessage;
+        private event Action<MessageDto> OnUpdateMessage;
+        private event Action<MessageDto> OnDeleteMessage;
 
         public SignalRMessageService(string hubUrl)
         {
@@ -43,9 +41,6 @@ namespace BlazorWASMOnionMessenger.Client.Features.Messages
             hubConnection.On<MessageDto>("DeleteMessage", message =>
             {
                 OnDeleteMessage?.Invoke(message);
-            });
-            hubConnection.On<int, string, string>("SignalWebRtc", (chatId, type, payload) => {
-                OnSignalWebRtc?.Invoke(chatId, type, payload);
             });
         }
 
@@ -104,20 +99,6 @@ namespace BlazorWASMOnionMessenger.Client.Features.Messages
         public void UnsubscribeFromUpdateMessage(Action<MessageDto> handler)
         {
             OnUpdateMessage -= handler;
-        }
-        public void SubscribeToSignalWebRtc(Action<int, string, string> handler)
-        {
-            OnSignalWebRtc += handler;
-        }
-
-        public void UnsubscribeFromSignalWebRtc(Action<int, string, string> handler)
-        {
-            OnSignalWebRtc -= handler;
-        }
-
-        public HubConnection GetHub()
-        {
-            return this.hubConnection;
         }
     }
 }

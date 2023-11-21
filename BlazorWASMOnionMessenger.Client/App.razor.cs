@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using BlazorWASMOnionMessenger.Client.Features.Messages;
+using BlazorWASMOnionMessenger.Client.WebRtc;
 using BlazorWASMOnionMessenger.Domain.DTOs.Message;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -11,6 +12,7 @@ namespace BlazorWASMOnionMessenger.Client
     {
         [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; }
         [Inject] private ISignalRMessageService signalRMessageService { get; set; }
+        [Inject] private IWebRtcService webRWebRtcService { get; set; }
         [Inject] protected NotificationService NotificationService { get; set; }
         [Inject] private ILocalStorageService localStorage { get; set; }
         [Inject] NavigationManager NavigationManager { get; set; }
@@ -21,7 +23,6 @@ namespace BlazorWASMOnionMessenger.Client
         {
             await HandleSignalRConnection();
             AuthenticationStateProvider.AuthenticationStateChanged += HandleAuthenticationStateChanged;
-            signalRMessageService.SubscribeToSignalWebRtc(ShowIncomingCall);
         }
 
         private void ShowMessageNotification(MessageDto messageDto)
@@ -60,6 +61,11 @@ namespace BlazorWASMOnionMessenger.Client
 
             var token = await localStorage.GetItemAsync<string>("authToken");
             if (string.IsNullOrEmpty(token)) return;
+
+            webRWebRtcService.CreateAsync(token);
+            webRWebRtcService.SubscribeToSignalWebRtc(ShowIncomingCall);
+            await webRWebRtcService.StartConnection();
+
 
             signalRMessageService.CreateAsync(token);
             signalRMessageService.SubscribeToReceiveMessage(ShowMessageNotification);
