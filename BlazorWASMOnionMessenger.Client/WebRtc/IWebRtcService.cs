@@ -6,7 +6,7 @@ namespace BlazorWASMOnionMessenger.Client.WebRtc
     {
         event EventHandler<IJSObjectReference>? OnRemoteStreamAcquired;
 
-        Task Join(int chatId);
+        Task Initialize(int chatId);
         Task<IJSObjectReference> StartLocalStream();
         Task Call();
         Task Hangup();

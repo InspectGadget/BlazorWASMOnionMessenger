@@ -5,5 +5,8 @@ namespace BlazorWASMOnionMessenger.Application.Interfaces.SignalR
     public interface IMessageHub
     {
         Task SendMessageToChat(CreateMessageDto messageDto);
+        Task DeleteMessageFromChat(MessageDto messageDto);
+        Task UpdateMessageInChat(MessageDto messageDto);
+        Task SignalWebRtc(int chatId, string type, string payload);
     }
 }

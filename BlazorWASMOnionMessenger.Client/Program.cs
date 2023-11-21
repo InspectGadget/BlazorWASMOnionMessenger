@@ -29,7 +29,7 @@ builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IParticipantService, ParticipantService>();
 builder.Services.AddScoped<IHttpClientService, HttpClientService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
-//builder.Services.AddScoped<IWebRtcService, WebRtcService>();
+builder.Services.AddScoped<IWebRtcService, WebRtcService>();
 builder.Services.AddSingleton<JwtTokenParser>();
 builder.Services.AddScoped<ISignalRMessageService, SignalRMessageService>( provider =>
 {
@@ -38,5 +38,6 @@ builder.Services.AddScoped<ISignalRMessageService, SignalRMessageService>( provi
 });
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<ContextMenuService>();
+builder.Services.AddScoped<DialogService>();
 
 await builder.Build().RunAsync();

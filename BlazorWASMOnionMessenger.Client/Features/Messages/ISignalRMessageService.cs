@@ -1,4 +1,5 @@
 ﻿using BlazorWASMOnionMessenger.Domain.DTOs.Message;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace BlazorWASMOnionMessenger.Client.Features.Messages
 {
@@ -7,6 +8,8 @@ namespace BlazorWASMOnionMessenger.Client.Features.Messages
         event Action<MessageDto> OnReceiveMessage;
         event Action<MessageDto> OnUpdateMessage;
         event Action<MessageDto> OnDeleteMessage;
+        event Action<int, string, string> OnSignalWebRtc;
+
         void CreateAsync(string token);
         Task StartConnection();
         Task SendMessageToChat(CreateMessageDto newMessageDto);
@@ -18,5 +21,8 @@ namespace BlazorWASMOnionMessenger.Client.Features.Messages
         void UnsubscribeFromDeleteMessage(Action<MessageDto> handler);
         void SubscribeToUpdateMessage(Action<MessageDto> handler);
         void UnsubscribeFromUpdateMessage(Action<MessageDto> handler);
+        void SubscribeToSignalWebRtc(Action<int, string, string> handler);
+        void UnsubscribeFromSignalWebRtc(Action<int, string, string> handler);
+        HubConnection GetHub();
     }
 }
