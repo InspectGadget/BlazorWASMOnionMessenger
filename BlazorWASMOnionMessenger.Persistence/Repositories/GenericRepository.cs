@@ -1,4 +1,5 @@
-﻿using BlazorWASMOnionMessenger.Application.Interfaces.Repositories;
+﻿using BlazorWASMOnionMessenger.Application.Common.Exceptions;
+using BlazorWASMOnionMessenger.Application.Interfaces.Repositories;
 using BlazorWASMOnionMessenger.Domain.Common;
 using BlazorWASMOnionMessenger.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -19,60 +20,102 @@ namespace BlazorWASMOnionMessenger.Persistence.Repositories
 
         public void Add(T entity)
         {
-             dbContext.Set<T>().Add(entity);
+            try
+            {
+                dbContext.Set<T>().Add(entity);
+            }
+            catch (Exception ex)
+            {
+                throw new RepositoryException("Error occurred while adding entity to the database.", ex);
+            }
         }
 
         public void Delete(T entity)
         {
-            dbContext.Set<T>().Remove(entity);
+            try
+            {
+                dbContext.Set<T>().Remove(entity);
+            }
+            catch (Exception ex)
+            {
+                throw new RepositoryException("Error occurred while deleting entity from the database.", ex);
+            }
         }
 
         public async Task<List<T>> GetAllAsync(
             Expression<Func<T, bool>> filter = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null)
         {
-            IQueryable<T> query = dbContext.Set<T>();
-
-            if (filter != null)
+            try
             {
-                query = query.Where(filter);
-            }
+                IQueryable<T> query = dbContext.Set<T>();
 
-            if (orderBy != null)
+                if (filter != null)
+                {
+                    query = query.Where(filter);
+                }
+
+                if (orderBy != null)
+                {
+                    query = orderBy(query);
+                }
+
+                return await query.ToListAsync();
+            }
+            catch (Exception ex)
             {
-                query = orderBy(query);
+                throw new RepositoryException("Error occurred while retrieving entities from the database.", ex);
             }
-
-            return await query.ToListAsync();
         }
 
         public IQueryable<T> GetQueryable(
-        Expression<Func<T, bool>> filter = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null)
+            Expression<Func<T, bool>> filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null)
         {
-            IQueryable<T> query = dbContext.Set<T>().AsQueryable();
-
-            if (filter != null)
+            try
             {
-                query = query.Where(filter);
-            }
+                IQueryable<T> query = dbContext.Set<T>().AsQueryable();
 
-            if (orderBy != null)
+                if (filter != null)
+                {
+                    query = query.Where(filter);
+                }
+
+                if (orderBy != null)
+                {
+                    query = orderBy(query);
+                }
+
+                return query;
+            }
+            catch (Exception ex)
             {
-                query = orderBy(query);
+                throw new RepositoryException("Error occurred while creating a queryable for entities.", ex);
             }
-
-            return query;
         }
 
         public async Task<T> GetByIdAsync(int id)
         {
-            return await dbContext.Set<T>().FindAsync(id);
+            try
+            {
+                return await dbContext.Set<T>().FindAsync(id);
+            }
+            catch (Exception ex)
+            {
+                throw new RepositoryException($"Error occurred while retrieving entity with ID {id} from the database.", ex);
+            }
         }
 
         public void DeleteRange(IEnumerable<T> entities)
         {
-            dbContext.Set<T>().RemoveRange(entities);
+            try
+            {
+                dbContext.Set<T>().RemoveRange(entities);
+            }
+            catch (Exception ex)
+            {
+                throw new RepositoryException("Error occurred while deleting a range of entities from the database.", ex);
+            }
         }
     }
 }

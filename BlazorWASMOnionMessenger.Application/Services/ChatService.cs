@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using BlazorWASMOnionMessenger.Application.Common.Exceptions;
 using BlazorWASMOnionMessenger.Application.Interfaces.Chats;
 using BlazorWASMOnionMessenger.Application.Interfaces.Common;
 using BlazorWASMOnionMessenger.Application.Interfaces.Participant;
@@ -8,6 +9,7 @@ using BlazorWASMOnionMessenger.Domain.Common;
 using BlazorWASMOnionMessenger.Domain.DTOs.Chat;
 using BlazorWASMOnionMessenger.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Dynamic.Core;
 
 namespace BlazorWASMOnionMessenger.Application.Services
@@ -31,67 +33,101 @@ namespace BlazorWASMOnionMessenger.Application.Services
 
         public async Task<int> CreateChat(CreateChatDto createChatDto)
         {
-            if (createChatDto.ChatTypeId == PrivateChatTypeId)
+            try
             {
-                var chatId = unitOfWork.Repository<Chat>()
-                    .GetQueryable(chat =>
-                        chat.ChatTypeId == PrivateChatTypeId &&
-                        chat.Participants.Any(participant => participant.UserId == createChatDto.ParticipantId)
-                    )
-                    .Select(chat => chat.Id)
-                    .FirstOrDefault();
-                if (chatId != 0) return chatId;
-            }
+                if (createChatDto.ChatTypeId == PrivateChatTypeId)
+                {
+                    var chatId = await unitOfWork.Repository<Chat>()
+                        .GetQueryable(chat =>
+                            chat.ChatTypeId == PrivateChatTypeId &&
+                            chat.Participants.Any(participant => participant.UserId == createChatDto.ParticipantId)
+                        )
+                        .Select(chat => chat.Id)
+                        .FirstOrDefaultAsync();
 
-            var newChat = mapper.Map<Chat>(createChatDto);
-            unitOfWork.Repository<Chat>().Add(newChat);
-            await unitOfWork.SaveAsync();
+                    if (chatId != 0) return chatId;
+                }
 
-            await participantService.AddParticipantToChat(new Domain.DTOs.Participant.CreateParticipantDto
-            {
-                ChatId = newChat.Id,
-                UserId = createChatDto.CreatorId,
-                RoleId = AdminUserId
-            });
+                var newChat = mapper.Map<Chat>(createChatDto);
+                unitOfWork.Repository<Chat>().Add(newChat);
+                await unitOfWork.SaveAsync();
 
-            if (createChatDto.ChatTypeId == PrivateChatTypeId)
-            {
                 await participantService.AddParticipantToChat(new Domain.DTOs.Participant.CreateParticipantDto
                 {
                     ChatId = newChat.Id,
-                    UserId = createChatDto.ParticipantId
+                    UserId = createChatDto.CreatorId,
+                    RoleId = AdminUserId
                 });
+
+                if (createChatDto.ChatTypeId == PrivateChatTypeId)
+                {
+                    await participantService.AddParticipantToChat(new Domain.DTOs.Participant.CreateParticipantDto
+                    {
+                        ChatId = newChat.Id,
+                        UserId = createChatDto.ParticipantId
+                    });
+                }
+
+                return newChat.Id;
             }
-
-            return newChat.Id;
-
+            catch (RepositoryException ex)
+            {
+                throw new ServiceException("Error occurred while creating a chat.", ex);
+            }
         }
 
         public async Task<ChatDto> GetChatById(int chatId)
         {
-            return await unitOfWork.Repository<Chat>().GetQueryable(c => c.Id == chatId).ProjectTo<ChatDto>(mapper.ConfigurationProvider).FirstAsync();
+            try
+            {
+                var result = await unitOfWork.Repository<Chat>()
+                    .GetQueryable(c => c.Id == chatId)
+                    .ProjectTo<ChatDto>(mapper.ConfigurationProvider)
+                    .FirstOrDefaultAsync();
+                return result;
+            }
+            catch (RepositoryException ex)
+            {
+                throw new ServiceException($"Error occurred while retrieving chat with ID {chatId}.", ex);
+            }
         }
 
         public async Task<PagedEntities<ChatDto>> GetChatsPage(int page, int pageSize, string orderBy, bool orderType, string search)
         {
-            var chatRepository = unitOfWork.Repository<Chat>();
-
-            var searchPredicate = searchPredicateBuilder.BuildSearchPredicate<Chat, ChatDto>(search);
-
-            var query = chatRepository.GetQueryable(searchPredicate);
-
-            var quantity = query.Count();
-
-            if (!string.IsNullOrEmpty(orderBy)) query = query.OrderBy(orderBy + " " + (orderType ? "desc" : "asc"));
-
-            var pageChat = await query.Skip((page - 1) * pageSize).Take(pageSize)
-                .ProjectTo<ChatDto>(mapper.ConfigurationProvider).ToListAsync();
-
-            return new PagedEntities<ChatDto>(pageChat)
+            try
             {
-                Quantity = quantity,
-                Pages = (int)Math.Ceiling((double)quantity / pageSize)
-            };
+                if (page <= 0)
+                {
+                    throw new ArgumentException("Page number must be greater than 0.", nameof(page));
+                }
+
+                if (pageSize <= 0)
+                {
+                    throw new ArgumentException("Page size must be greater than 0.", nameof(pageSize));
+                }
+
+                var chatRepository = unitOfWork.Repository<Chat>();
+                var searchPredicate = searchPredicateBuilder.BuildSearchPredicate<Chat, ChatDto>(search);
+                var query = chatRepository.GetQueryable(searchPredicate);
+
+                var quantity = await query.CountAsync();
+
+                if (!string.IsNullOrEmpty(orderBy)) query = query.OrderBy(orderBy + " " + (orderType ? "desc" : "asc"));
+
+                var pageChat = await query.Skip((page - 1) * pageSize).Take(pageSize)
+                    .ProjectTo<ChatDto>(mapper.ConfigurationProvider)
+                    .ToListAsync();
+
+                return new PagedEntities<ChatDto>(pageChat)
+                {
+                    Quantity = quantity,
+                    Pages = (int)Math.Ceiling((double)quantity / pageSize)
+                };
+            }
+            catch (RepositoryException ex)
+            {
+                throw new ServiceException("Error occurred while retrieving chats.", ex);
+            }
         }
     }
 }

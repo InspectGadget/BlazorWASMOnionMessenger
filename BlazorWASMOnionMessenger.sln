@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorWASMOnionMessenger.Cl
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "BlazorWASMOnionMessenger.Database", "BlazorWASMOnionMessenger.Database\BlazorWASMOnionMessenger.Database.sqlproj", "{A9D922F0-2909-4CDC-9BE0-6ED0088623FA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorWASMOnionMessenger.Application.Test", "BlazorWASMOnionMessenger.Application.Test\BlazorWASMOnionMessenger.Application.Test.csproj", "{A2F69611-DEF7-4686-8E41-4C6F1366ADDF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{A9D922F0-2909-4CDC-9BE0-6ED0088623FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9D922F0-2909-4CDC-9BE0-6ED0088623FA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A9D922F0-2909-4CDC-9BE0-6ED0088623FA}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{A2F69611-DEF7-4686-8E41-4C6F1366ADDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2F69611-DEF7-4686-8E41-4C6F1366ADDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2F69611-DEF7-4686-8E41-4C6F1366ADDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2F69611-DEF7-4686-8E41-4C6F1366ADDF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

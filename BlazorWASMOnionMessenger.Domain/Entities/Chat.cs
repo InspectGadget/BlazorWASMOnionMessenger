@@ -12,7 +12,7 @@ namespace BlazorWASMOnionMessenger.Domain.Entities
 
         public DateTime CreatedAt { get; set; }
         public ICollection<Participant> Participants { get; } = new List<Participant>();
-        public ICollection<Message> Messages { get; } = new List<Message>();
+        public ICollection<Message> Messages { get; set; } = new List<Message>();
 
     }
 }

@@ -27,62 +27,110 @@ namespace BlazorWASMOnionMessenger.Application.Services
 
         public async Task ChangePassword(string userId, string currentPassword, string newPassword)
         {
-            var user = await userManager.FindByIdAsync(userId)
-                ?? throw new CustomAuthenticationException("User not found.");
-
-            var changePasswordResult = await userManager.ChangePasswordAsync(user, currentPassword, newPassword);
-
-            if (!changePasswordResult.Succeeded)
+            try
             {
-                throw new CustomAuthenticationException("Password change failed.");
+                var user = await userManager.FindByIdAsync(userId)
+                    ?? throw new CustomAuthenticationException("User not found.");
+
+                var changePasswordResult = await userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+
+                if (!changePasswordResult.Succeeded)
+                {
+                    throw new CustomAuthenticationException("Password change failed.");
+                }
+            }
+            catch (Exception ex) when (ex is CustomAuthenticationException || ex is InvalidOperationException)
+            {
+                throw; // Re-throw CustomAuthenticationException directly
+            }
+            catch (Exception ex)
+            {
+                throw new ServiceException("Error occurred while changing password.", ex);
             }
         }
 
         public async Task UpdateUser(UserDto userDto, string userId)
         {
-            var user = await userManager.FindByIdAsync(userId) ?? throw new RepositoryException("User not found.");
-
-            user.UserName = userDto.UserName;
-            user.PhoneNumber = userDto.PhoneNumber;
-            user.FirstName = userDto.FirstName;
-            user.LastName = userDto.LastName;
-
-            var result = await userManager.UpdateAsync(user);
-
-            if (!result.Succeeded)
+            try
             {
-                throw new RepositoryException("Failed to update.");
+                var user = await userManager.FindByIdAsync(userId);
+                if(user == null) throw new ServiceException("User not found.");
+
+                user.UserName = userDto.UserName;
+                user.PhoneNumber = userDto.PhoneNumber;
+                user.FirstName = userDto.FirstName;
+                user.LastName = userDto.LastName;
+
+                var result = await userManager.UpdateAsync(user);
+
+                if (!result.Succeeded)
+                {
+                    throw new RepositoryException("Failed to update user.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ServiceException("Error occurred while updating user.", ex);
             }
         }
 
         public async Task<UserDto> GetById(string userId)
         {
-            var user = await userManager.FindByIdAsync(userId);
-            return mapper.Map<UserDto>(user);
+            try
+            {
+                var user = await userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    throw new NotFoundException($"User with ID {userId} not found.");
+                }
+
+                return mapper.Map<UserDto>(user);
+            }
+            catch (Exception ex)
+            {
+                throw new ServiceException("Error occurred while getting user by ID.", ex);
+            }
         }
 
         public async Task<PagedEntities<UserDto>> GetPage(int page, int pageSize, string orderBy, bool orderType, string search)
         {
-            var users = userManager.Users.AsQueryable();
-
-            if (!string.IsNullOrEmpty(search))
+            try
             {
-                users = users.Where(searchPredicateBuilder.
-                    BuildSearchPredicate<ApplicationUser, UserDto>(search));
+                if (page <= 0)
+                {
+                    throw new ArgumentException("Page number must be greater than 0.", nameof(page));
+                }
+
+                if (pageSize <= 0)
+                {
+                    throw new ArgumentException("Page size must be greater than 0.", nameof(pageSize));
+                }
+
+                var users = userManager.Users.AsQueryable();
+
+                if (!string.IsNullOrEmpty(search))
+                {
+                    users = users.Where(searchPredicateBuilder.
+                        BuildSearchPredicate<ApplicationUser, UserDto>(search));
+                }
+
+                var quantity = users.Count();
+
+                if (!string.IsNullOrEmpty(orderBy)) users = users.OrderBy(orderBy + " " + (orderType ? "desc" : "asc"));
+
+                var pageUsers = await users.Skip((page - 1) * pageSize).Take(pageSize)
+                    .ProjectTo<UserDto>(mapper.ConfigurationProvider).ToListAsync();
+
+                return new PagedEntities<UserDto>(pageUsers)
+                {
+                    Quantity = quantity,
+                    Pages = (int)Math.Ceiling((double)quantity / pageSize)
+                };
             }
-
-            var quantity = users.Count();
-
-            if (!string.IsNullOrEmpty(orderBy)) users = users.OrderBy(orderBy + " " + (orderType ? "desc" : "asc"));
-
-            var pageUsers = await users.Skip((page - 1) * pageSize).Take(pageSize)
-                .ProjectTo<UserDto>(mapper.ConfigurationProvider).ToListAsync();
-
-            return new PagedEntities<UserDto>(pageUsers)
+            catch (Exception ex)
             {
-                Quantity = quantity,
-                Pages = (int)Math.Ceiling((double)quantity / pageSize)
-            };
+                throw new ServiceException("Error occurred while retrieving user page.", ex);
+            }
         }
     }
 }
